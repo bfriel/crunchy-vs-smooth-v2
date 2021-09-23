@@ -14,9 +14,9 @@ export default function VoteTally({ votes }) {
 
   function getProgress() {
     if (
-      (votes.crunchy === 0 && votes.smooth === 0) ||
-      !votes.crunchy ||
-      !votes.smooth
+      typeof votes.crunchy !== "number" ||
+      typeof votes.smooth !== "number" ||
+      votes.crunchy + votes.smooth === 0
     ) {
       return 50;
     }
