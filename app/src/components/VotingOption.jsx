@@ -57,6 +57,7 @@ export default function VotingOption({ side, count, handleVote }) {
         size="large"
         color={side === "smooth" ? "primary" : "secondary"}
         className={classes.button}
+        // startIcon={<ButtonIcon side={side} />}
       >
         {`Vote ${side.charAt(0).toUpperCase() + side.slice(1)}`}
       </Button>

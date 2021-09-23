@@ -9,6 +9,7 @@ import Navbar from "./Navbar";
 import VotingOption from "./VotingOption";
 import { LinearProgress } from "@material-ui/core";
 import VoteTally from "./VoteTally";
+import Footer from "./Footer";
 
 const { SystemProgram, Keypair } = web3;
 
@@ -154,16 +155,7 @@ export default function Main(props) {
           </Grid>
         </Grid>
       </Container>
-      <div>
-        Icons made by{" "}
-        <a href="https://www.freepik.com" title="Freepik">
-          Freepik
-        </a>{" "}
-        from{" "}
-        <a href="https://www.flaticon.com/" title="Flaticon">
-          www.flaticon.com
-        </a>
-      </div>
+      <Footer />
     </Box>
   );
 }

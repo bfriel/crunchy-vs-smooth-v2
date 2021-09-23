@@ -1,9 +1,26 @@
-import { Box, LinearProgress, makeStyles, Typography } from "@material-ui/core";
+import {
+  Avatar,
+  Box,
+  LinearProgress,
+  makeStyles,
+  Typography,
+} from "@material-ui/core";
 import React from "react";
 import { formatWithCommas, percentize } from "../utils";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  avatar: {
+    height: 48,
+    width: 48,
+    borderRadius: "initial",
+    "&.left": {
+      marginRight: theme.spacing(0.5),
+    },
+    "&.right": {
+      marginLeft: theme.spacing(0.5),
+    },
+  },
+  progress: {
     backgroundColor: theme.palette.primary.main,
     height: 25,
   },
@@ -25,15 +42,31 @@ export default function VoteTally({ votes }) {
 
   return (
     <Box>
-      <Box display="flex" justifyContent="space-between">
-        <Typography variant="h6">Team Crunchy</Typography>
-        <Typography variant="h6">Team Smooth</Typography>
+      <Box display="flex" justifyContent="space-between" marginBottom="5px">
+        {/* <Typography variant="h6">Team Crunchy</Typography>
+        <Typography variant="h6">Team Smooth</Typography> */}
+        <Box display="flex" alignItems="flex-end">
+          <Avatar
+            alt=""
+            src="/images/crunchy-icon.svg"
+            className={[classes.avatar, "left"].join(" ")}
+          />
+          <Typography variant="h6">Team Crunchy</Typography>
+        </Box>
+        <Box display="flex" alignItems="flex-end">
+          <Typography variant="h6">Team Smooth</Typography>
+          <Avatar
+            alt=""
+            src="/images/smooth-icon.svg"
+            className={[classes.avatar, "right"].join(" ")}
+          />
+        </Box>
       </Box>
       <LinearProgress
         variant="determinate"
         value={getProgress()}
         color="secondary"
-        className={classes.root}
+        className={classes.progress}
       />
       <Box display="flex" justifyContent="space-between">
         <Box>
