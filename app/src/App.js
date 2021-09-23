@@ -6,9 +6,9 @@ import { WalletDialogProvider } from "@solana/wallet-adapter-material-ui";
 import { getPhantomWallet } from "@solana/wallet-adapter-wallets";
 import { SnackbarProvider, useSnackbar } from "notistack";
 import { createTheme, ThemeProvider } from "@material-ui/core";
-import { blue, red } from "@material-ui/core/colors";
+import { blue, orange } from "@material-ui/core/colors";
 
-import Main from "./Main";
+import Main from "./components/Main";
 import { useCallback } from "react";
 
 const localnet = "http://127.0.0.1:8899";
@@ -20,7 +20,7 @@ const theme = createTheme({
       main: blue[300],
     },
     secondary: {
-      main: red[300],
+      main: orange[300],
     },
   },
   overrides: {

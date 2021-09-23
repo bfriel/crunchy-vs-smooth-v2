@@ -2,13 +2,19 @@ import React from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { Program, Provider, web3 } from "@project-serum/anchor";
-import idl from "./idl.json";
+import idl from "../idl.json";
 import { useState } from "react";
-import { Box, Button, Container, Typography } from "@material-ui/core";
+import { Box, Button, Container, Grid, makeStyles } from "@material-ui/core";
 import Navbar from "./Navbar";
 import VotingOption from "./VotingOption";
+import { LinearProgress } from "@material-ui/core";
+import VoteTally from "./VoteTally";
 
 const { SystemProgram, Keypair } = web3;
+
+// const useStyles = makeStyles((theme) => ({
+//   progress: {},
+// }));
 
 const localnet = "http://127.0.0.1:8899";
 const preflightCommitment = "processed";
@@ -18,7 +24,10 @@ const baseAccount = Keypair.generate();
 export default function Main(props) {
   const wallet = useWallet();
 
-  const [votes, setVotes] = useState({ crunchy: null, smooth: null });
+  const [votes, setVotes] = useState({
+    crunchy: null,
+    smooth: null,
+  });
 
   console.log("wallet: ", wallet);
   console.log("wallet connected: ", wallet.connected);
@@ -52,8 +61,8 @@ export default function Main(props) {
       );
       console.log("account: ", account);
       setVotes({
-        crunchy: account.crunchy.toString(),
-        smooth: account.smooth.toString(),
+        crunchy: parseInt(account.crunchy.toString()),
+        smooth: parseInt(account.smooth.toString()),
       });
     } catch (err) {
       console.log("Transaction error: ", err);
@@ -77,8 +86,8 @@ export default function Main(props) {
       );
       console.log("account: ", account);
       setVotes({
-        crunchy: account.crunchy.toString(),
-        smooth: account.smooth.toString(),
+        crunchy: parseInt(account.crunchy.toString()),
+        smooth: parseInt(account.smooth.toString()),
       });
     } catch (err) {
       console.log("Transaction error: ", err);
@@ -102,38 +111,59 @@ export default function Main(props) {
       );
       console.log("account: ", account);
       setVotes({
-        crunchy: account.crunchy.toString(),
-        smooth: account.smooth.toString(),
+        crunchy: parseInt(account.crunchy.toString()),
+        smooth: parseInt(account.smooth.toString()),
       });
     } catch (err) {
       console.log("Transaction error: ", err);
     }
   }
 
+  console.log(votes);
+
   return (
     <Box>
       <Navbar />
       <Container>
-        {!votes.crunchy && !votes.smooth && (
-          <Button
-            color="primary"
-            variant="contained"
-            onClick={initializeVoting}
-          >
-            Initialize
-          </Button>
-        )}
-        <VotingOption
-          side="crunchy"
-          count={votes.crunchy}
-          handleVote={voteCrunchy}
-        />
-        <VotingOption
-          side="smooth"
-          count={votes.smooth}
-          handleVote={voteSmooth}
-        />
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <VoteTally votes={votes} />
+          </Grid>
+          <Grid item xs={6}>
+            <VotingOption
+              side="crunchy"
+              count={votes.crunchy}
+              handleVote={voteCrunchy}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <VotingOption
+              side="smooth"
+              count={votes.smooth}
+              handleVote={voteSmooth}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={initializeVoting}
+            >
+              Initialize
+            </Button>
+          </Grid>
+        </Grid>
       </Container>
+      <div>
+        Icons made by{" "}
+        <a href="https://www.freepik.com" title="Freepik">
+          Freepik
+        </a>{" "}
+        from{" "}
+        <a href="https://www.flaticon.com/" title="Flaticon">
+          www.flaticon.com
+        </a>
+      </div>
     </Box>
   );
 }
