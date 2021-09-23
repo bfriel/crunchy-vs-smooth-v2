@@ -4,8 +4,9 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import { Program, Provider, web3 } from "@project-serum/anchor";
 import idl from "./idl.json";
 import { useState } from "react";
-import { Box, Button, Typography } from "@material-ui/core";
+import { Box, Button, Container, Typography } from "@material-ui/core";
 import Navbar from "./Navbar";
+import VotingOption from "./VotingOption";
 
 const { SystemProgram, Keypair } = web3;
 
@@ -112,24 +113,27 @@ export default function Main(props) {
   return (
     <Box>
       <Navbar />
-      <Typography variant="subtitle1">Crunchy</Typography>
-      <Typography variant="h5">{votes.crunchy}</Typography>
-      <Typography variant="subtitle1">Smooth</Typography>
-      <Typography variant="h5">{votes.smooth}</Typography>
-      {!!votes.crunchy && !!votes.smooth ? (
-        <React.Fragment>
-          <Button color="primary" variant="contained" onClick={voteCrunchy}>
-            Vote Crunchy
+      <Container>
+        {!votes.crunchy && !votes.smooth && (
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={initializeVoting}
+          >
+            Initialize
           </Button>
-          <Button color="primary" variant="contained" onClick={voteSmooth}>
-            Vote Smooth
-          </Button>
-        </React.Fragment>
-      ) : (
-        <Button color="primary" variant="contained" onClick={initializeVoting}>
-          Initialize
-        </Button>
-      )}
+        )}
+        <VotingOption
+          side="crunchy"
+          count={votes.crunchy}
+          handleVote={voteCrunchy}
+        />
+        <VotingOption
+          side="smooth"
+          count={votes.smooth}
+          handleVote={voteSmooth}
+        />
+      </Container>
     </Box>
   );
 }
