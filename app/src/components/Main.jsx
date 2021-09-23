@@ -123,38 +123,40 @@ export default function Main(props) {
   console.log(votes);
 
   return (
-    <Box>
-      <Navbar />
-      <Container>
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <VoteTally votes={votes} />
+    <Box height="100%" display="flex" flexDirection="column">
+      <Box flex="1 0 auto">
+        <Navbar />
+        <Container>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <VoteTally votes={votes} />
+            </Grid>
+            <Grid item xs={6}>
+              <VotingOption
+                side="crunchy"
+                count={votes.crunchy}
+                handleVote={voteCrunchy}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <VotingOption
+                side="smooth"
+                count={votes.smooth}
+                handleVote={voteSmooth}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={initializeVoting}
+              >
+                Initialize
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item xs={6}>
-            <VotingOption
-              side="crunchy"
-              count={votes.crunchy}
-              handleVote={voteCrunchy}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <VotingOption
-              side="smooth"
-              count={votes.smooth}
-              handleVote={voteSmooth}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={initializeVoting}
-            >
-              Initialize
-            </Button>
-          </Grid>
-        </Grid>
-      </Container>
+        </Container>
+      </Box>
       <Footer />
     </Box>
   );

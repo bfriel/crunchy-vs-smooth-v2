@@ -6,7 +6,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "transparent",
     boxShadow: "none",
     borderTop: "1px solid #e6e6e5",
-    marginTop: "auto",
+    flexShrink: 0,
   },
   toolbar: {
     justifyContent: "space-between",
