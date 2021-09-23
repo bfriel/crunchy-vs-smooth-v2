@@ -1,0 +1,12 @@
+[programs.localnet]
+crunchy_vs_smooth = "7Ntd1GePKvSSYseiHqdk88k3mRLaQrMxmGnnoVpn8QQd"
+
+[registry]
+url = "https://anchor.projectserum.com"
+
+[provider]
+cluster = "localnet"
+wallet = "/Users/brianfriel/.config/solana/id.json"
+
+[scripts]
+test = "mocha -t 1000000 tests/"
