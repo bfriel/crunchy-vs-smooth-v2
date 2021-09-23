@@ -17,9 +17,11 @@ const wallets = [getPhantomWallet()];
 const theme = createTheme({
   palette: {
     primary: {
+      // main: orange[300],
       main: blue[300],
     },
     secondary: {
+      // main: blue[300],
       main: orange[300],
     },
   },

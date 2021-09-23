@@ -10,6 +10,7 @@ import VotingOption from "./VotingOption";
 import { LinearProgress } from "@material-ui/core";
 import VoteTally from "./VoteTally";
 import Footer from "./Footer";
+import Intro from "./Intro";
 
 const { SystemProgram, Keypair } = web3;
 
@@ -129,6 +130,9 @@ export default function Main(props) {
         <Container>
           <Grid container spacing={3}>
             <Grid item xs={12}>
+              <Intro initializeVoting={initializeVoting} />
+            </Grid>
+            <Grid item xs={12}>
               <VoteTally votes={votes} />
             </Grid>
             <Grid item xs={6}>
@@ -144,15 +148,6 @@ export default function Main(props) {
                 count={votes.smooth}
                 handleVote={voteSmooth}
               />
-            </Grid>
-            <Grid item xs={12}>
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={initializeVoting}
-              >
-                Initialize
-              </Button>
             </Grid>
           </Grid>
         </Container>
