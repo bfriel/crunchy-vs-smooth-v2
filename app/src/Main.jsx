@@ -1,16 +1,11 @@
-import React, { useCallback } from "react";
-import {
-  ConnectionProvider,
-  useWallet,
-  WalletProvider,
-} from "@solana/wallet-adapter-react";
+import React from "react";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { Program, Provider, web3 } from "@project-serum/anchor";
-import { WalletMultiButton } from "@solana/wallet-adapter-material-ui";
 import idl from "./idl.json";
-import { useMemo, useState } from "react";
-import { AppBar, Box, Button, Paper, Typography } from "@material-ui/core";
-import { WalletAdapterNetwork, WalletError } from "@solana/wallet-adapter-base";
+import { useState } from "react";
+import { Box, Button, Typography } from "@material-ui/core";
+import Navbar from "./Navbar";
 
 const { SystemProgram, Keypair } = web3;
 
@@ -116,8 +111,7 @@ export default function Main(props) {
 
   return (
     <Box>
-      <WalletMultiButton />
-      <Box></Box>
+      <Navbar />
       <Typography variant="subtitle1">Crunchy</Typography>
       <Typography variant="h5">{votes.crunchy}</Typography>
       <Typography variant="subtitle1">Smooth</Typography>

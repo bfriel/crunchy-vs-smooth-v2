@@ -3,15 +3,10 @@ import {
   WalletProvider,
 } from "@solana/wallet-adapter-react";
 import { WalletDialogProvider } from "@solana/wallet-adapter-material-ui";
-import {
-  getLedgerWallet,
-  getPhantomWallet,
-  getSlopeWallet,
-  getSolflareWallet,
-} from "@solana/wallet-adapter-wallets";
+import { getPhantomWallet } from "@solana/wallet-adapter-wallets";
 import { SnackbarProvider, useSnackbar } from "notistack";
 import { createTheme, ThemeProvider } from "@material-ui/core";
-import { deepPurple } from "@material-ui/core/colors";
+import { blue, red } from "@material-ui/core/colors";
 
 import Main from "./Main";
 import { useCallback } from "react";
@@ -21,9 +16,11 @@ const wallets = [getPhantomWallet()];
 
 const theme = createTheme({
   palette: {
-    type: "dark",
     primary: {
-      main: deepPurple[700],
+      main: blue[300],
+    },
+    secondary: {
+      main: red[300],
     },
   },
   overrides: {
