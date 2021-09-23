@@ -130,7 +130,7 @@ export default function Main(props) {
         <Container>
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <Intro initializeVoting={initializeVoting} />
+              <Intro votes={votes} initializeVoting={initializeVoting} />
             </Grid>
             <Grid item xs={12}>
               <VoteTally votes={votes} />

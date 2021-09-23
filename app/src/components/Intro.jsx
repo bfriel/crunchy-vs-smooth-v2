@@ -1,19 +1,33 @@
 import { Box, Button, Link, Typography } from "@material-ui/core";
+import { green } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/styles";
 import { WalletMultiButton } from "@solana/wallet-adapter-material-ui";
 import { useWallet } from "@solana/wallet-adapter-react";
 import React from "react";
 
 const useStyles = makeStyles((theme) => ({
-  connectButton: {
+  button: {
     marginTop: theme.spacing(1),
     "&.hidden": {
       visibility: "hidden",
     },
   },
+  connected: {
+    color: green[500],
+  },
+  connectedBubble: {
+    backgroundColor: green[500],
+    height: 12,
+    width: 12,
+    borderRadius: "50%",
+    marginRight: theme.spacing(0.5),
+  },
+  link: {
+    color: "initial",
+  },
 }));
 
-export default function Intro({ initializeVoting }) {
+export default function Intro({ votes, initializeVoting }) {
   const wallet = useWallet();
   const classes = useStyles();
   return (
@@ -25,12 +39,20 @@ export default function Intro({ initializeVoting }) {
         It's time to settle an age old debate: Crunchy, or Smooth?
       </Typography>
       <Typography variant="body1">
-        Cast your vote to the <Link href="https://solana.com/">Solana</Link>{" "}
+        Cast your vote to the{" "}
+        <Link className={classes.link} href="https://solana.com/">
+          Solana
+        </Link>{" "}
         blockchain and help decide this once and for all!
       </Typography>
       <Box marginTop="8px">
         {wallet.connected ? (
-          <Typography variant="body1">Connected</Typography>
+          <Box display="flex" alignItems="center" justifyContent="center">
+            <Box className={classes.connectedBubble} />
+            <Typography variant="body1" className={classes.connected}>
+              Connected
+            </Typography>
+          </Box>
         ) : (
           <Typography variant="body1">
             To get started, connect your wallet below:
@@ -39,16 +61,27 @@ export default function Intro({ initializeVoting }) {
         <WalletMultiButton
           className={
             wallet.connected
-              ? [classes.connectButton, "hidden"].join(" ")
-              : classes.connectButton
+              ? [classes.button, "hidden"].join(" ")
+              : classes.button
           }
         />
       </Box>
-      {/* <Box marginTop="8px">
-        <Button color="primary" variant="contained" onClick={initializeVoting}>
-          Initialize
-        </Button>
-      </Box> */}
+      {(typeof votes.crunchy !== "number" ||
+        typeof votes.crunchy !== "number") && (
+        <Box marginTop="8px">
+          <Typography variant="body1">
+            This program has not been initialized yet
+          </Typography>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={initializeVoting}
+            className={classes.button}
+          >
+            Initialize Program
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 }
