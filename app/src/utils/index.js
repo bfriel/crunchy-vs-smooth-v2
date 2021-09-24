@@ -1,3 +1,5 @@
+export const preflightCommitment = "processed";
+
 export const percentize = (decimal, min, max) => {
   if (typeof decimal !== "number" || isNaN(decimal)) return "";
   return max === 0

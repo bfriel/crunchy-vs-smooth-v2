@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { Program, Provider, web3 } from "@project-serum/anchor";
@@ -13,26 +13,41 @@ import Intro from "./Intro";
 import { useSnackbar } from "notistack";
 import VoteHistory from "./VoteHistory";
 
-const { SystemProgram, Keypair } = web3;
-
 const preflightCommitment = "processed";
 const programID = new PublicKey(idl.metadata.address);
-const voteAccount = Keypair.generate();
 
-export default function Main({ network }) {
-  const wallet = useWallet();
+export default function Main({ network, voteAccount }) {
   const { enqueueSnackbar } = useSnackbar();
+  const wallet = useWallet();
 
   const [votes, setVotes] = useState({
     crunchy: null,
     smooth: null,
   });
-
   const [voteTxHistory, setVoteTxHistory] = useState([]);
 
-  console.log("wallet: ", wallet);
-  console.log("wallet connected: ", wallet.connected);
-  console.log("programID: ", programID.toString());
+  useEffect(() => {
+    async function getVotes() {
+      const connection = new Connection(network, preflightCommitment);
+      const provider = new Provider(connection, wallet, preflightCommitment);
+      const program = new Program(idl, programID, provider);
+      try {
+        const account = await program.account.voteAccount.fetch(
+          voteAccount.publicKey
+        );
+        setVotes({
+          crunchy: parseInt(account.crunchy.toString()),
+          smooth: parseInt(account.smooth.toString()),
+        });
+      } catch (error) {
+        console.log("could not getVotes: ", error);
+      }
+    }
+
+    if (!!voteAccount) {
+      getVotes();
+    }
+  }, [voteAccount, network, wallet]);
 
   async function getProvider() {
     const connection = new Connection(network, preflightCommitment);
@@ -44,22 +59,19 @@ export default function Main({ network }) {
     const provider = await getProvider();
     const program = new Program(idl, programID, provider);
     try {
-      const tx = await program.rpc.initialize({
+      await program.rpc.initialize({
         accounts: {
           voteAccount: voteAccount.publicKey,
           user: provider.wallet.publicKey,
-          systemProgram: SystemProgram.programId,
+          systemProgram: web3.SystemProgram.programId,
         },
         signers: [voteAccount],
       });
-
-      console.group("intialize tx: ", tx);
 
       const account = await program.account.voteAccount.fetch(
         voteAccount.publicKey
       );
 
-      console.log("account: ", account);
       setVotes({
         crunchy: parseInt(account.crunchy.toString()),
         smooth: parseInt(account.smooth.toString()),
@@ -83,12 +95,9 @@ export default function Main({ network }) {
         },
       });
 
-      console.log("tx: ", tx);
-
       const account = await program.account.voteAccount.fetch(
         voteAccount.publicKey
       );
-      console.log("account: ", account);
       setVotes({
         crunchy: parseInt(account.crunchy.toString()),
         smooth: parseInt(account.smooth.toString()),
@@ -112,12 +121,9 @@ export default function Main({ network }) {
         },
       });
 
-      console.log("tx: ", tx);
-
       const account = await program.account.voteAccount.fetch(
         voteAccount.publicKey
       );
-      console.log("account: ", account);
       setVotes({
         crunchy: parseInt(account.crunchy.toString()),
         smooth: parseInt(account.smooth.toString()),
@@ -130,8 +136,6 @@ export default function Main({ network }) {
       enqueueSnackbar(`Error: ${error.toString()}`, { variant: "error" });
     }
   }
-
-  console.log(votes);
 
   return (
     <Box height="100%" display="flex" flexDirection="column">

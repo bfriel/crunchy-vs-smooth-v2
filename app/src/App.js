@@ -8,7 +8,9 @@ import { SnackbarProvider, useSnackbar } from "notistack";
 import { createTheme, ThemeProvider } from "@material-ui/core";
 import { blue, orange } from "@material-ui/core/colors";
 import { clusterApiUrl } from "@solana/web3.js";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { web3 } from "@project-serum/anchor";
+
 import Main from "./components/Main";
 
 // const localnet = "http://127.0.0.1:8899";
@@ -59,6 +61,22 @@ const theme = createTheme({
 // Nest app within <SnackbarProvider /> so that we can set up Snackbar notifications on Wallet errors
 function AppWrappedWithProviders() {
   const { enqueueSnackbar } = useSnackbar();
+  const [voteAccount, setVoteAccount] = useState(null);
+
+  useEffect(() => {
+    fetch("/voteAccount")
+      .then((response) => response.json())
+      .then((data) => {
+        const accountArray = Object.values(data.voteAccount._keypair.secretKey);
+        const secret = new Uint8Array(accountArray);
+        const kp = web3.Keypair.fromSecretKey(secret);
+        setVoteAccount(kp);
+      })
+      .catch((error) => {
+        console.log(error);
+        enqueueSnackbar("Could not fetch vote account", { variant: "error" });
+      });
+  }, [enqueueSnackbar]);
 
   const onWalletError = useCallback(
     (error) => {
@@ -75,7 +93,7 @@ function AppWrappedWithProviders() {
   return (
     <WalletProvider wallets={wallets} onError={onWalletError} autoConnect>
       <WalletDialogProvider>
-        <Main network={network} />
+        <Main network={network} voteAccount={voteAccount} />
       </WalletDialogProvider>
     </WalletProvider>
   );

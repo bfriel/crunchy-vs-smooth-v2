@@ -22,6 +22,9 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "50%",
     marginRight: theme.spacing(0.5),
   },
+  title: {
+    fontWeight: 700,
+  },
 }));
 
 export default function Intro({
@@ -34,7 +37,12 @@ export default function Intro({
   const classes = useStyles();
   return (
     <Box textAlign="center">
-      <Typography component="h1" variant="h3" gutterBottom>
+      <Typography
+        component="h1"
+        variant="h3"
+        gutterBottom
+        className={classes.title}
+      >
         Crunchy or Smooth?
       </Typography>
       <Typography variant="body1">
