@@ -15,9 +15,9 @@ const { SystemProgram, Keypair } = web3;
 
 const preflightCommitment = "processed";
 const programID = new PublicKey(idl.metadata.address);
-const baseAccount = Keypair.generate();
+const voteAccount = Keypair.generate();
 
-export default function Main({ localnet }) {
+export default function Main({ network }) {
   const wallet = useWallet();
 
   const [votes, setVotes] = useState({
@@ -32,7 +32,6 @@ export default function Main({ localnet }) {
   async function getProvider() {
     /* create the provider and return it to the caller */
     /* network set to local network for now */
-    const network = localnet;
     const connection = new Connection(network, preflightCommitment);
     const provider = new Provider(connection, wallet, preflightCommitment);
     return provider;
@@ -46,15 +45,15 @@ export default function Main({ localnet }) {
       /* interact with the program via rpc */
       await program.rpc.initialize({
         accounts: {
-          baseAccount: baseAccount.publicKey,
+          voteAccount: voteAccount.publicKey,
           user: provider.wallet.publicKey,
           systemProgram: SystemProgram.programId,
         },
-        signers: [baseAccount],
+        signers: [voteAccount],
       });
 
-      const account = await program.account.baseAccount.fetch(
-        baseAccount.publicKey
+      const account = await program.account.voteAccount.fetch(
+        voteAccount.publicKey
       );
       console.log("account: ", account);
       setVotes({
@@ -74,12 +73,12 @@ export default function Main({ localnet }) {
       /* interact with the program via rpc */
       await program.rpc.voteCrunchy({
         accounts: {
-          baseAccount: baseAccount.publicKey,
+          voteAccount: voteAccount.publicKey,
         },
       });
 
-      const account = await program.account.baseAccount.fetch(
-        baseAccount.publicKey
+      const account = await program.account.voteAccount.fetch(
+        voteAccount.publicKey
       );
       console.log("account: ", account);
       setVotes({
@@ -99,12 +98,12 @@ export default function Main({ localnet }) {
       /* interact with the program via rpc */
       await program.rpc.voteSmooth({
         accounts: {
-          baseAccount: baseAccount.publicKey,
+          voteAccount: voteAccount.publicKey,
         },
       });
 
-      const account = await program.account.baseAccount.fetch(
-        baseAccount.publicKey
+      const account = await program.account.voteAccount.fetch(
+        voteAccount.publicKey
       );
       console.log("account: ", account);
       setVotes({

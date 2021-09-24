@@ -6,7 +6,7 @@
       "name": "initialize",
       "accounts": [
         {
-          "name": "baseAccount",
+          "name": "voteAccount",
           "isMut": true,
           "isSigner": true
         },
@@ -27,7 +27,7 @@
       "name": "voteCrunchy",
       "accounts": [
         {
-          "name": "baseAccount",
+          "name": "voteAccount",
           "isMut": true,
           "isSigner": false
         }
@@ -38,7 +38,7 @@
       "name": "voteSmooth",
       "accounts": [
         {
-          "name": "baseAccount",
+          "name": "voteAccount",
           "isMut": true,
           "isSigner": false
         }
@@ -48,7 +48,7 @@
   ],
   "accounts": [
     {
-      "name": "BaseAccount",
+      "name": "VoteAccount",
       "type": {
         "kind": "struct",
         "fields": [

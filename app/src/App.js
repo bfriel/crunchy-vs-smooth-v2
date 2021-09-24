@@ -7,11 +7,15 @@ import { getPhantomWallet } from "@solana/wallet-adapter-wallets";
 import { SnackbarProvider, useSnackbar } from "notistack";
 import { createTheme, ThemeProvider } from "@material-ui/core";
 import { blue, orange } from "@material-ui/core/colors";
+import { clusterApiUrl } from "@solana/web3.js";
 
 import Main from "./components/Main";
 import { useCallback } from "react";
 
-const localnet = "http://127.0.0.1:8899";
+// const localnet = "http://127.0.0.1:8899";
+const devnet = clusterApiUrl("devnet");
+const network = devnet;
+
 const wallets = [getPhantomWallet()];
 
 const theme = createTheme({
@@ -64,7 +68,7 @@ function RoutesWithWalletProvider() {
   return (
     <WalletProvider wallets={wallets} onError={onWalletError} autoConnect>
       <WalletDialogProvider>
-        <Main localnet={localnet} />
+        <Main network={network} />
       </WalletDialogProvider>
     </WalletProvider>
   );
@@ -74,11 +78,11 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <SnackbarProvider>
-        <ConnectionProvider endpoint={localnet}>
+        <ConnectionProvider endpoint={network}>
           {/* <RoutesWithWalletProvider /> */}
           <WalletProvider wallets={wallets} autoConnect>
             <WalletDialogProvider>
-              <Main localnet={localnet} />
+              <Main network={network} />
             </WalletDialogProvider>
           </WalletProvider>
         </ConnectionProvider>
