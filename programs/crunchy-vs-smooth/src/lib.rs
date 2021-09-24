@@ -6,19 +6,19 @@ declare_id!("7Ntd1GePKvSSYseiHqdk88k3mRLaQrMxmGnnoVpn8QQd");
 pub mod crunchy_vs_smooth {
     use super::*;
     pub fn initialize(ctx: Context<Initialize>) -> ProgramResult {
-        let base_account = &mut ctx.accounts.base_account;  
-        base_account.crunchy = 0;
-        base_account.smooth = 0;
+        let vote_account = &mut ctx.accounts.vote_account;  
+        vote_account.crunchy = 0;
+        vote_account.smooth = 0;
         Ok(())
     }
     pub fn vote_crunchy(ctx: Context<Vote>) -> ProgramResult {
-        let base_account = &mut ctx.accounts.base_account;
-        base_account.crunchy += 1;
+        let vote_account = &mut ctx.accounts.vote_account;
+        vote_account.crunchy += 1;
         Ok(())
     }
     pub fn vote_smooth(ctx: Context<Vote>) -> ProgramResult {
-        let base_account = &mut ctx.accounts.base_account;
-        base_account.smooth += 1;
+        let vote_account = &mut ctx.accounts.vote_account;
+        vote_account.smooth += 1;
         Ok(())
     }
 }
@@ -27,7 +27,7 @@ pub mod crunchy_vs_smooth {
 #[derive(Accounts)]
 pub struct Initialize<'info> {
     #[account(init, payer = user, space = 16 + 16)]
-    pub base_account: Account<'info, BaseAccount>,
+    pub vote_account: Account<'info, VoteAccount>,
     #[account(mut)]
     pub user: Signer<'info>,
     pub system_program: Program <'info, System>,
@@ -36,12 +36,12 @@ pub struct Initialize<'info> {
 #[derive(Accounts)]
 pub struct Vote<'info> {
     #[account(mut)]
-    pub base_account: Account<'info, BaseAccount>,
+    pub vote_account: Account<'info, VoteAccount>,
 }
 
 // An account that goes inside a transaction instruction
 #[account]
-pub struct BaseAccount {
+pub struct VoteAccount {
     pub crunchy: u64,
     pub smooth: u64,
 }

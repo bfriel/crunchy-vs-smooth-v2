@@ -7,21 +7,21 @@ describe("crunchy-vs-smooth", () => {
   const provider = anchor.Provider.env();
   anchor.setProvider(provider);
   const program = anchor.workspace.CrunchyVsSmooth;
-  const baseAccount = anchor.web3.Keypair.generate();
+  const voteAccount = anchor.web3.Keypair.generate();
 
   it("Initializes with 0 votes for crunchy and smooth", async () => {
     console.log("Testing Initialize...");
     await program.rpc.initialize({
       accounts: {
-        baseAccount: baseAccount.publicKey,
+        voteAccount: voteAccount.publicKey,
         user: provider.wallet.publicKey,
         systemProgram: SystemProgram.programId,
       },
-      signers: [baseAccount],
+      signers: [voteAccount],
     });
 
-    const account = await program.account.baseAccount.fetch(
-      baseAccount.publicKey
+    const account = await program.account.voteAccount.fetch(
+      voteAccount.publicKey
     );
     console.log("Crunchy: ", account.crunchy.toString());
     console.log("Smooth: ", account.smooth.toString());
@@ -33,12 +33,12 @@ describe("crunchy-vs-smooth", () => {
     console.log("Testing voteCrunchy...");
     await program.rpc.voteCrunchy({
       accounts: {
-        baseAccount: baseAccount.publicKey,
+        voteAccount: voteAccount.publicKey,
       },
     });
 
-    const account = await program.account.baseAccount.fetch(
-      baseAccount.publicKey
+    const account = await program.account.voteAccount.fetch(
+      voteAccount.publicKey
     );
     console.log("Crunchy: ", account.crunchy.toString());
     console.log("Smooth: ", account.smooth.toString());
@@ -51,12 +51,12 @@ describe("crunchy-vs-smooth", () => {
     console.log("Testing voteSmooth...");
     await program.rpc.voteSmooth({
       accounts: {
-        baseAccount: baseAccount.publicKey,
+        voteAccount: voteAccount.publicKey,
       },
     });
 
-    const account = await program.account.baseAccount.fetch(
-      baseAccount.publicKey
+    const account = await program.account.voteAccount.fetch(
+      voteAccount.publicKey
     );
     console.log("Crunchy: ", account.crunchy.toString());
     console.log("Smooth: ", account.smooth.toString());
