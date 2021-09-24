@@ -1,10 +1,10 @@
 use anchor_lang::prelude::*;
 
-// Your Program ID can be found in /programs/[your-project-name]/target/idl/[your_project_name].json
+// The Program ID can be found in /programs/[your-project-name]/target/idl/[your_project_name].json
 declare_id!("7Ntd1GePKvSSYseiHqdk88k3mRLaQrMxmGnnoVpn8QQd");
 
 // This is where the magic happens. We define our program!
-// Each menthod inside here defines an RPC request handler (aka instruction handler) which can be invoked by clients
+// Each method inside here defines an RPC request handler (aka instruction handler) which can be invoked by clients
 #[program]
 pub mod crunchy_vs_smooth {
     use super::*;
@@ -15,6 +15,7 @@ pub mod crunchy_vs_smooth {
         vote_account.smooth = 0;
         Ok(())
     }
+    // Allow account validation logic is hanlded below at the #[account(...)] macros, letting us just focus on the business logic
     pub fn vote_crunchy(ctx: Context<Vote>) -> ProgramResult {
         let vote_account = &mut ctx.accounts.vote_account;
         vote_account.crunchy += 1;
@@ -28,7 +29,7 @@ pub mod crunchy_vs_smooth {
 }
 
 // The #[derive(Accounts)] macro specifies all the accounts that are required for a given instruction
-// Here, we define two sets of instructions: Initialize and Vote
+// Here, we define two structs: Initialize and Vote
 #[derive(Accounts)]
 pub struct Initialize<'info> {
     // We mark vote_account with the init attribute, which creates a new account owned by the program
@@ -36,8 +37,9 @@ pub struct Initialize<'info> {
     // payer, which funds the account creation
     // space, which defines how large the account should be
     // and the system_program which is required by the runtime
+
+    // This enforces that our vote_account be owned by the currently executing program, and that it should be deserialized to the VoteAccount struct below at #[account]
     #[account(init, payer = user, space = 16 + 16)]
-    //  This enforces that our vote_account be owned by the currently executing program, and that it should be deserialized to the VoteAccount struct below at #[account]
     pub vote_account: Account<'info, VoteAccount>,
     #[account(mut)]
     pub user: Signer<'info>,
