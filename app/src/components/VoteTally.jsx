@@ -43,8 +43,6 @@ export default function VoteTally({ votes }) {
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" marginBottom="5px">
-        {/* <Typography variant="h6">Team Crunchy</Typography>
-        <Typography variant="h6">Team Smooth</Typography> */}
         <Box display="flex" alignItems="flex-end">
           <Avatar
             alt=""

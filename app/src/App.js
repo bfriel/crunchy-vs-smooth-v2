@@ -8,9 +8,8 @@ import { SnackbarProvider, useSnackbar } from "notistack";
 import { createTheme, ThemeProvider } from "@material-ui/core";
 import { blue, orange } from "@material-ui/core/colors";
 import { clusterApiUrl } from "@solana/web3.js";
-
-import Main from "./components/Main";
 import { useCallback } from "react";
+import Main from "./components/Main";
 
 // const localnet = "http://127.0.0.1:8899";
 const devnet = clusterApiUrl("devnet");
@@ -49,10 +48,16 @@ const theme = createTheme({
         color: "white",
       },
     },
+    MuiLink: {
+      root: {
+        color: "initial",
+      },
+    },
   },
 });
 
-function RoutesWithWalletProvider() {
+// Nest app within <SnackbarProvider /> so that we can set up Snackbar notifications on Wallet errors
+function AppWrappedWithProviders() {
   const { enqueueSnackbar } = useSnackbar();
 
   const onWalletError = useCallback(
@@ -66,6 +71,7 @@ function RoutesWithWalletProvider() {
     [enqueueSnackbar]
   );
 
+  // Wrap <Main /> within <WalletProvider /> so that we can access useWallet hook within Main
   return (
     <WalletProvider wallets={wallets} onError={onWalletError} autoConnect>
       <WalletDialogProvider>
@@ -80,12 +86,7 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <SnackbarProvider>
         <ConnectionProvider endpoint={network}>
-          <RoutesWithWalletProvider />
-          {/* <WalletProvider wallets={wallets} autoConnect>
-            <WalletDialogProvider>
-              <Main network={network} />
-            </WalletDialogProvider>
-          </WalletProvider> */}
+          <AppWrappedWithProviders />
         </ConnectionProvider>
       </SnackbarProvider>
     </ThemeProvider>

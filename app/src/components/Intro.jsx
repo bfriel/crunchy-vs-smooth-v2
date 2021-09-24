@@ -22,9 +22,6 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "50%",
     marginRight: theme.spacing(0.5),
   },
-  link: {
-    color: "initial",
-  },
 }));
 
 export default function Intro({
@@ -46,7 +43,7 @@ export default function Intro({
       </Typography>
       <Typography variant="body1">
         Cast your vote to the{" "}
-        <Link className={classes.link} href="https://solana.com/">
+        <Link href="https://solana.com/" underline="always">
           Solana
         </Link>{" "}
         blockchain and help decide this once and for all!
@@ -77,17 +74,21 @@ export default function Intro({
         wallet.connected && (
           <Box marginTop="8px">
             <Typography variant="body1">
+              This{" "}
               <Link
                 href={`https://explorer.solana.com/address/${programID.toString()}`}
+                underline="always"
               >
-                This program's
-              </Link>{" "}
+                program
+              </Link>
+              {"'s "}
               <Link
                 href={`https://explorer.solana.com/address/${voteAccount?.publicKey.toString()}`}
+                underline="always"
               >
                 vote account
               </Link>{" "}
-              has not been initialized yet
+              has not been initialized yet:
             </Typography>
             <Button
               color="primary"

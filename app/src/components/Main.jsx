@@ -4,13 +4,14 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import { Program, Provider, web3 } from "@project-serum/anchor";
 import idl from "../idl.json";
 import { useState } from "react";
-import { Box, Container, Grid } from "@material-ui/core";
+import { Box, Container, Grid, Link, List, ListItem } from "@material-ui/core";
 import Navbar from "./Navbar";
-import VotingOption from "./VotingOption";
+import VoteOption from "./VoteOption";
 import VoteTally from "./VoteTally";
 import Footer from "./Footer";
 import Intro from "./Intro";
 import { useSnackbar } from "notistack";
+import VoteHistory from "./VoteHistory";
 
 const { SystemProgram, Keypair } = web3;
 
@@ -26,6 +27,8 @@ export default function Main({ network }) {
     crunchy: null,
     smooth: null,
   });
+
+  const [voteTxHistory, setVoteTxHistory] = useState([]);
 
   console.log("wallet: ", wallet);
   console.log("wallet connected: ", wallet.connected);
@@ -91,6 +94,7 @@ export default function Main({ network }) {
         smooth: parseInt(account.smooth.toString()),
       });
       enqueueSnackbar("Voted for Crunchy!", { variant: "success" });
+      setVoteTxHistory((oldVoteTxHistory) => [...oldVoteTxHistory, tx]);
     } catch (error) {
       console.log("Transaction error: ", error);
       console.log(error.toString());
@@ -119,6 +123,7 @@ export default function Main({ network }) {
         smooth: parseInt(account.smooth.toString()),
       });
       enqueueSnackbar("Voted for Smooth!", { variant: "success" });
+      setVoteTxHistory((oldVoteTxHistory) => [...oldVoteTxHistory, tx]);
     } catch (error) {
       console.log("Transaction error: ", error);
       console.log(error.toString());
@@ -146,18 +151,13 @@ export default function Main({ network }) {
               <VoteTally votes={votes} />
             </Grid>
             <Grid item xs={6}>
-              <VotingOption
-                side="crunchy"
-                count={votes.crunchy}
-                handleVote={voteCrunchy}
-              />
+              <VoteOption side="crunchy" handleVote={voteCrunchy} />
             </Grid>
             <Grid item xs={6}>
-              <VotingOption
-                side="smooth"
-                count={votes.smooth}
-                handleVote={voteSmooth}
-              />
+              <VoteOption side="smooth" handleVote={voteSmooth} />
+            </Grid>
+            <Grid item xs={12}>
+              <VoteHistory voteTxHistory={voteTxHistory} />
             </Grid>
           </Grid>
         </Container>

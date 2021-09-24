@@ -12,15 +12,6 @@ import TwitterIcon from "@material-ui/icons/Twitter";
 import GitHubIcon from "@material-ui/icons/GitHub";
 
 const useStyles = makeStyles((theme) => ({
-  link: {
-    color: "initial",
-    "&.underline": {
-      textDecoration: "underline",
-    },
-    "&.twitter": {
-      marginRight: theme.spacing(1),
-    },
-  },
   root: {
     backgroundColor: "transparent",
     boxShadow: "none",
@@ -30,6 +21,9 @@ const useStyles = makeStyles((theme) => ({
   },
   toolbar: {
     justifyContent: "space-between",
+  },
+  twitter: {
+    marginRight: theme.spacing(1),
   },
 }));
 
@@ -41,53 +35,41 @@ export default function Footer({ programID, voteAccount }) {
         <Toolbar className={classes.toolbar}>
           <Typography variant="caption">
             Made by{" "}
-            <Link
-              className={[classes.link, "underline"].join(" ")}
-              href="https://brianfriel.xyz"
-            >
+            <Link underline="always" href="https://brianfriel.xyz">
               Brian Friel
             </Link>
             {" | "}
             Powered by{" "}
-            <Link
-              className={[classes.link, "underline"].join(" ")}
-              href="https://solana.com/"
-            >
+            <Link underline="always" href="https://solana.com/">
               Solana
             </Link>
             {" | "}
             <Link
-              className={[classes.link, "underline"].join(" ")}
+              underline="always"
               href={`https://explorer.solana.com/address/${programID.toString()}`}
             >
               Program ID
             </Link>
             {" | "}
             <Link
-              className={[classes.link, "underline"].join(" ")}
+              underline="always"
               href={`https://explorer.solana.com/address/${voteAccount?.publicKey.toString()}`}
             >
               Vote Account
             </Link>
             {" | "}
-            <Link
-              className={[classes.link, "underline"].join(" ")}
-              href="https://www.freepik.com"
-            >
+            <Link underline="always" href="https://www.freepik.com">
               Icon Credits
             </Link>
           </Typography>
           <Box>
             <Link
-              className={[classes.link, "twitter"].join(" ")}
+              className={classes.twitter}
               href="https://twitter.com/bfriel_"
             >
               <TwitterIcon />
             </Link>
-            <Link
-              className={classes.link}
-              href="https://github.com/bfriel/crunchy-vs-smooth"
-            >
+            <Link href="https://github.com/bfriel/crunchy-vs-smooth">
               <GitHubIcon />
             </Link>
           </Box>

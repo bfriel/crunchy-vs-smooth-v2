@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function VotingOption({ side, count, handleVote }) {
+export default function VoteOption({ side, handleVote }) {
   const classes = useStyles();
   const wallet = useWallet();
   return (
