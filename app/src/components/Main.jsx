@@ -4,7 +4,7 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import { Program, Provider, web3 } from "@project-serum/anchor";
 import idl from "../idl.json";
 import { useState } from "react";
-import { Box, Container, Grid, Link, List, ListItem } from "@material-ui/core";
+import { Box, Container, Grid } from "@material-ui/core";
 import Navbar from "./Navbar";
 import VoteOption from "./VoteOption";
 import VoteTally from "./VoteTally";
