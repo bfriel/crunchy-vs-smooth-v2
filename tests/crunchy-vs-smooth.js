@@ -3,14 +3,19 @@ const anchor = require("@project-serum/anchor");
 const { SystemProgram } = anchor.web3;
 
 describe("crunchy-vs-smooth", () => {
-  // Configure the client to use the local cluster.
+  // Configure the client
   const provider = anchor.Provider.env();
   anchor.setProvider(provider);
+
   const program = anchor.workspace.CrunchyVsSmooth;
   const voteAccount = anchor.web3.Keypair.generate();
 
   it("Initializes with 0 votes for crunchy and smooth", async () => {
     console.log("Testing Initialize...");
+
+    // The last element passed to RPC methods is always the transaction options
+    // Because voteAccount is being created here, we are required to pass it as a signers array
+
     await program.rpc.initialize({
       accounts: {
         voteAccount: voteAccount.publicKey,

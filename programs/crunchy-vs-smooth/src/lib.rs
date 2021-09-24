@@ -1,10 +1,14 @@
 use anchor_lang::prelude::*;
 
+// Your Program ID can be found in /programs/[your-project-name]/target/idl/[your_project_name].json
 declare_id!("7Ntd1GePKvSSYseiHqdk88k3mRLaQrMxmGnnoVpn8QQd");
 
+// This is where the magic happens. We define our program!
+// Each menthod inside here defines an RPC request handler (aka instruction handler) which can be invoked by clients
 #[program]
 pub mod crunchy_vs_smooth {
     use super::*;
+    // The first parameter for every RPC handler is the Context struct. We define Initialize and Vote below at #[derive(Accounts)]
     pub fn initialize(ctx: Context<Initialize>) -> ProgramResult {
         let vote_account = &mut ctx.accounts.vote_account;  
         vote_account.crunchy = 0;
@@ -23,10 +27,17 @@ pub mod crunchy_vs_smooth {
     }
 }
 
-// Transaction instructions
+// The #[derive(Accounts)] macro specifies all the accounts that are required for a given instruction
+// Here, we define two sets of instructions: Initialize and Vote
 #[derive(Accounts)]
 pub struct Initialize<'info> {
+    // We mark vote_account with the init attribute, which creates a new account owned by the program
+    // When using init, we must also provide:
+    // payer, which funds the account creation
+    // space, which defines how large the account should be
+    // and the system_program which is required by the runtime
     #[account(init, payer = user, space = 16 + 16)]
+    //  This enforces that our vote_account be owned by the currently executing program, and that it should be deserialized to the VoteAccount struct below at #[account]
     pub vote_account: Account<'info, VoteAccount>,
     #[account(mut)]
     pub user: Signer<'info>,
@@ -35,11 +46,15 @@ pub struct Initialize<'info> {
 
 #[derive(Accounts)]
 pub struct Vote<'info> {
+    // Marking accounts as mut persists any changes made upon exiting the program, allowing our votes to be recorded
     #[account(mut)]
     pub vote_account: Account<'info, VoteAccount>,
 }
 
-// An account that goes inside a transaction instruction
+// Here we define what our VoteAccount looks like
+// We define a struct with two public properties: crunchy and smooth
+// These properties will keep track of their respective votes as unsigned 64-bit integers
+// This VoteAccount will be passed inside each Transaction Instruction to record votes as they occur
 #[account]
 pub struct VoteAccount {
     pub crunchy: u64,
