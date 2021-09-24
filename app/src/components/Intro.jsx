@@ -27,7 +27,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Intro({ votes, initializeVoting, programID }) {
+export default function Intro({
+  votes,
+  initializeVoting,
+  programID,
+  voteAccount,
+}) {
   const wallet = useWallet();
   const classes = useStyles();
   return (
@@ -75,7 +80,12 @@ export default function Intro({ votes, initializeVoting, programID }) {
               <Link
                 href={`https://explorer.solana.com/address/${programID.toString()}`}
               >
-                This program
+                This program's
+              </Link>{" "}
+              <Link
+                href={`https://explorer.solana.com/address/${voteAccount?.publicKey.toString()}`}
+              >
+                vote account
               </Link>{" "}
               has not been initialized yet
             </Typography>

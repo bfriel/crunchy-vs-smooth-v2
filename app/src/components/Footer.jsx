@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Footer({ programID }) {
+export default function Footer({ programID, voteAccount }) {
   const classes = useStyles();
   return (
     <AppBar position="static" className={classes.root}>
@@ -47,13 +47,34 @@ export default function Footer({ programID }) {
             >
               Brian Friel
             </Link>
-            {". "}
+            {" | "}
             Powered by{" "}
+            <Link
+              className={[classes.link, "underline"].join(" ")}
+              href="https://solana.com/"
+            >
+              Solana
+            </Link>
+            {" | "}
             <Link
               className={[classes.link, "underline"].join(" ")}
               href={`https://explorer.solana.com/address/${programID.toString()}`}
             >
-              Solana{" "}
+              Program ID
+            </Link>
+            {" | "}
+            <Link
+              className={[classes.link, "underline"].join(" ")}
+              href={`https://explorer.solana.com/address/${voteAccount?.publicKey.toString()}`}
+            >
+              Vote Account
+            </Link>
+            {" | "}
+            <Link
+              className={[classes.link, "underline"].join(" ")}
+              href="https://www.freepik.com"
+            >
+              Icon Credits
             </Link>
           </Typography>
           <Box>

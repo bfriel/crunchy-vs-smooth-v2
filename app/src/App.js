@@ -65,6 +65,7 @@ function RoutesWithWalletProvider() {
     },
     [enqueueSnackbar]
   );
+
   return (
     <WalletProvider wallets={wallets} onError={onWalletError} autoConnect>
       <WalletDialogProvider>
@@ -79,12 +80,12 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <SnackbarProvider>
         <ConnectionProvider endpoint={network}>
-          {/* <RoutesWithWalletProvider /> */}
-          <WalletProvider wallets={wallets} autoConnect>
+          <RoutesWithWalletProvider />
+          {/* <WalletProvider wallets={wallets} autoConnect>
             <WalletDialogProvider>
               <Main network={network} />
             </WalletDialogProvider>
-          </WalletProvider>
+          </WalletProvider> */}
         </ConnectionProvider>
       </SnackbarProvider>
     </ThemeProvider>

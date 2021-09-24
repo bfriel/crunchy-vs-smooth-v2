@@ -10,6 +10,7 @@ import VotingOption from "./VotingOption";
 import VoteTally from "./VoteTally";
 import Footer from "./Footer";
 import Intro from "./Intro";
+import { useSnackbar } from "notistack";
 
 const { SystemProgram, Keypair } = web3;
 
@@ -19,6 +20,7 @@ const voteAccount = Keypair.generate();
 
 export default function Main({ network }) {
   const wallet = useWallet();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [votes, setVotes] = useState({
     crunchy: null,
@@ -30,8 +32,6 @@ export default function Main({ network }) {
   console.log("programID: ", programID.toString());
 
   async function getProvider() {
-    /* create the provider and return it to the caller */
-    /* network set to local network for now */
     const connection = new Connection(network, preflightCommitment);
     const provider = new Provider(connection, wallet, preflightCommitment);
     return provider;
@@ -39,11 +39,9 @@ export default function Main({ network }) {
 
   async function initializeVoting() {
     const provider = await getProvider();
-    /* create the program interface combining the idl, program ID, and provider */
     const program = new Program(idl, programID, provider);
     try {
-      /* interact with the program via rpc */
-      await program.rpc.initialize({
+      const tx = await program.rpc.initialize({
         accounts: {
           voteAccount: voteAccount.publicKey,
           user: provider.wallet.publicKey,
@@ -52,30 +50,37 @@ export default function Main({ network }) {
         signers: [voteAccount],
       });
 
+      console.group("intialize tx: ", tx);
+
       const account = await program.account.voteAccount.fetch(
         voteAccount.publicKey
       );
+
       console.log("account: ", account);
       setVotes({
         crunchy: parseInt(account.crunchy.toString()),
         smooth: parseInt(account.smooth.toString()),
       });
-    } catch (err) {
-      console.log("Transaction error: ", err);
+      enqueueSnackbar("Vote account initialized", { variant: "success" });
+    } catch (error) {
+      console.log("Transaction error: ", error);
+      console.log(error.toString());
+      enqueueSnackbar(`Error: ${error.toString()}`, { variant: "error" });
     }
   }
 
   async function voteCrunchy() {
     const provider = await getProvider();
-    /* create the program interface combining the idl, program ID, and provider */
     const program = new Program(idl, programID, provider);
+
     try {
-      /* interact with the program via rpc */
-      await program.rpc.voteCrunchy({
+      const tx = await program.rpc.voteCrunchy({
         accounts: {
           voteAccount: voteAccount.publicKey,
         },
       });
+
+      console.log("tx: ", tx);
 
       const account = await program.account.voteAccount.fetch(
         voteAccount.publicKey
@@ -85,22 +90,25 @@ export default function Main({ network }) {
         crunchy: parseInt(account.crunchy.toString()),
         smooth: parseInt(account.smooth.toString()),
       });
-    } catch (err) {
-      console.log("Transaction error: ", err);
+      enqueueSnackbar("Voted for Crunchy!", { variant: "success" });
+    } catch (error) {
+      console.log("Transaction error: ", error);
+      console.log(error.toString());
+      enqueueSnackbar(`Error: ${error.toString()}`, { variant: "error" });
     }
   }
 
   async function voteSmooth() {
     const provider = await getProvider();
-    /* create the program interface combining the idl, program ID, and provider */
     const program = new Program(idl, programID, provider);
     try {
-      /* interact with the program via rpc */
-      await program.rpc.voteSmooth({
+      const tx = await program.rpc.voteSmooth({
         accounts: {
           voteAccount: voteAccount.publicKey,
         },
       });
+
+      console.log("tx: ", tx);
 
       const account = await program.account.voteAccount.fetch(
         voteAccount.publicKey
@@ -110,8 +118,11 @@ export default function Main({ network }) {
         crunchy: parseInt(account.crunchy.toString()),
         smooth: parseInt(account.smooth.toString()),
       });
-    } catch (err) {
-      console.log("Transaction error: ", err);
+      enqueueSnackbar("Voted for Smooth!", { variant: "success" });
+    } catch (error) {
+      console.log("Transaction error: ", error);
+      console.log(error.toString());
+      enqueueSnackbar(`Error: ${error.toString()}`, { variant: "error" });
     }
   }
 
@@ -128,6 +139,7 @@ export default function Main({ network }) {
                 votes={votes}
                 initializeVoting={initializeVoting}
                 programID={programID}
+                voteAccount={voteAccount}
               />
             </Grid>
             <Grid item xs={12}>
@@ -150,7 +162,7 @@ export default function Main({ network }) {
           </Grid>
         </Container>
       </Box>
-      <Footer programID={programID} />
+      <Footer programID={programID} voteAccount={voteAccount} />
     </Box>
   );
 }
