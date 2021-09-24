@@ -53,7 +53,7 @@ export default function VoteTally({ votes }) {
           />
           <Typography variant="h6">Team Crunchy</Typography>
         </Box>
-        <Box display="flex" alignItems="flex-end">
+        <Box display="flex" alignItems="flex-end" textAlign="right">
           <Typography variant="h6">Team Smooth</Typography>
           <Avatar
             alt=""

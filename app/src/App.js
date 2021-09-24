@@ -17,11 +17,9 @@ const wallets = [getPhantomWallet()];
 const theme = createTheme({
   palette: {
     primary: {
-      // main: orange[300],
       main: blue[300],
     },
     secondary: {
-      // main: blue[300],
       main: orange[300],
     },
   },
@@ -35,12 +33,16 @@ const theme = createTheme({
       root: {
         textTransform: undefined,
         padding: "12px 16px",
+        fontWeight: 600,
       },
       startIcon: {
         marginRight: 8,
       },
       endIcon: {
         marginLeft: 8,
+      },
+      label: {
+        color: "white",
       },
     },
   },
@@ -62,7 +64,7 @@ function RoutesWithWalletProvider() {
   return (
     <WalletProvider wallets={wallets} onError={onWalletError} autoConnect>
       <WalletDialogProvider>
-        <Main />
+        <Main localnet={localnet} />
       </WalletDialogProvider>
     </WalletProvider>
   );
@@ -76,7 +78,7 @@ export default function App() {
           {/* <RoutesWithWalletProvider /> */}
           <WalletProvider wallets={wallets} autoConnect>
             <WalletDialogProvider>
-              <Main />
+              <Main localnet={localnet} />
             </WalletDialogProvider>
           </WalletProvider>
         </ConnectionProvider>

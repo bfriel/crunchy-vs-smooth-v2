@@ -4,26 +4,20 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import { Program, Provider, web3 } from "@project-serum/anchor";
 import idl from "../idl.json";
 import { useState } from "react";
-import { Box, Button, Container, Grid, makeStyles } from "@material-ui/core";
+import { Box, Container, Grid } from "@material-ui/core";
 import Navbar from "./Navbar";
 import VotingOption from "./VotingOption";
-import { LinearProgress } from "@material-ui/core";
 import VoteTally from "./VoteTally";
 import Footer from "./Footer";
 import Intro from "./Intro";
 
 const { SystemProgram, Keypair } = web3;
 
-// const useStyles = makeStyles((theme) => ({
-//   progress: {},
-// }));
-
-const localnet = "http://127.0.0.1:8899";
 const preflightCommitment = "processed";
 const programID = new PublicKey(idl.metadata.address);
 const baseAccount = Keypair.generate();
 
-export default function Main(props) {
+export default function Main({ localnet }) {
   const wallet = useWallet();
 
   const [votes, setVotes] = useState({
@@ -33,6 +27,7 @@ export default function Main(props) {
 
   console.log("wallet: ", wallet);
   console.log("wallet connected: ", wallet.connected);
+  console.log("programID: ", programID.toString());
 
   async function getProvider() {
     /* create the provider and return it to the caller */
@@ -130,7 +125,11 @@ export default function Main(props) {
         <Container>
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <Intro votes={votes} initializeVoting={initializeVoting} />
+              <Intro
+                votes={votes}
+                initializeVoting={initializeVoting}
+                programID={programID}
+              />
             </Grid>
             <Grid item xs={12}>
               <VoteTally votes={votes} />
@@ -152,7 +151,7 @@ export default function Main(props) {
           </Grid>
         </Container>
       </Box>
-      <Footer />
+      <Footer programID={programID} />
     </Box>
   );
 }

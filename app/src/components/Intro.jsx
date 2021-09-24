@@ -27,16 +27,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Intro({ votes, initializeVoting }) {
+export default function Intro({ votes, initializeVoting, programID }) {
   const wallet = useWallet();
   const classes = useStyles();
   return (
     <Box textAlign="center">
       <Typography component="h1" variant="h3" gutterBottom>
-        Vote for your favorite Peanut Butter
+        Crunchy or Smooth?
       </Typography>
       <Typography variant="body1">
-        It's time to settle an age old debate: Crunchy, or Smooth?
+        It's time to settle an age old debate: What is the best kind of peanut
+        butter?
       </Typography>
       <Typography variant="body1">
         Cast your vote to the{" "}
@@ -67,21 +68,27 @@ export default function Intro({ votes, initializeVoting }) {
         />
       </Box>
       {(typeof votes.crunchy !== "number" ||
-        typeof votes.crunchy !== "number") && (
-        <Box marginTop="8px">
-          <Typography variant="body1">
-            This program has not been initialized yet
-          </Typography>
-          <Button
-            color="primary"
-            variant="contained"
-            onClick={initializeVoting}
-            className={classes.button}
-          >
-            Initialize Program
-          </Button>
-        </Box>
-      )}
+        typeof votes.crunchy !== "number") &&
+        wallet.connected && (
+          <Box marginTop="8px">
+            <Typography variant="body1">
+              <Link
+                href={`https://explorer.solana.com/address/${programID.toString()}`}
+              >
+                This program
+              </Link>{" "}
+              has not been initialized yet
+            </Typography>
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={initializeVoting}
+              className={classes.button}
+            >
+              Initialize Program
+            </Button>
+          </Box>
+        )}
     </Box>
   );
 }
