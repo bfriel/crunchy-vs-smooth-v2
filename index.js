@@ -1,7 +1,5 @@
-const fs = require("fs");
-var path = require("path");
+const path = require("path");
 const anchor = require("@project-serum/anchor");
-const web3 = require("@solana/web3.js");
 const express = require("express");
 
 const voteAccount = anchor.web3.Keypair.generate();
@@ -14,9 +12,9 @@ app.get("/voteAccount", (req, res) => {
   res.json({ voteAccount });
 });
 
-// app.get("*", (req, res) => {
-//   res.sendFile(path.resolve(__dirname, "app/build", "index.html"));
-// });
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "app/build", "index.html"));
+});
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);

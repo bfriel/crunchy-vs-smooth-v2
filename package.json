@@ -8,6 +8,10 @@
     "mocha": "^9.0.3"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "build": "cd app && npm install && npm run build"
+  },
+  "engines": {
+    "node": "v16.7.0"
   }
 }
