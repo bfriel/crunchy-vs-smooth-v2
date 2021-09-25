@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { Connection, PublicKey } from "@solana/web3.js";
+import { Connection } from "@solana/web3.js";
 import { Program, Provider, web3 } from "@project-serum/anchor";
 import idl from "../idl.json";
 import { useState } from "react";
@@ -12,9 +12,7 @@ import Footer from "./Footer";
 import Intro from "./Intro";
 import { useSnackbar } from "notistack";
 import VoteHistory from "./VoteHistory";
-
-const preflightCommitment = "processed";
-const programID = new PublicKey(idl.metadata.address);
+import { preflightCommitment, programID, capitalize } from "../utils";
 
 export default function Main({ network, voteAccount }) {
   const { enqueueSnackbar } = useSnackbar();
@@ -27,6 +25,7 @@ export default function Main({ network, voteAccount }) {
   const [voteTxHistory, setVoteTxHistory] = useState([]);
 
   useEffect(() => {
+    // Call Solana program for vote count
     async function getVotes() {
       const connection = new Connection(network, preflightCommitment);
       const provider = new Provider(connection, wallet, preflightCommitment);
@@ -55,6 +54,7 @@ export default function Main({ network, voteAccount }) {
     return provider;
   }
 
+  // Initialize the program if this is the first time its launched
   async function initializeVoting() {
     const provider = await getProvider();
     const program = new Program(idl, programID, provider);
@@ -84,16 +84,23 @@ export default function Main({ network, voteAccount }) {
     }
   }
 
-  async function voteCrunchy() {
+  // Vote for either crunchy or smooth. Poll for updated vote count on completion
+  async function handleVote(side) {
     const provider = await getProvider();
     const program = new Program(idl, programID, provider);
-
     try {
-      const tx = await program.rpc.voteCrunchy({
-        accounts: {
-          voteAccount: voteAccount.publicKey,
-        },
-      });
+      const tx =
+        side === "crunchy"
+          ? await program.rpc.voteCrunchy({
+              accounts: {
+                voteAccount: voteAccount.publicKey,
+              },
+            })
+          : await program.rpc.voteSmooth({
+              accounts: {
+                voteAccount: voteAccount.publicKey,
+              },
+            });
 
       const account = await program.account.voteAccount.fetch(
         voteAccount.publicKey
@@ -102,33 +109,7 @@ export default function Main({ network, voteAccount }) {
         crunchy: parseInt(account.crunchy.toString()),
         smooth: parseInt(account.smooth.toString()),
       });
-      enqueueSnackbar("Voted for Crunchy!", { variant: "success" });
-      setVoteTxHistory((oldVoteTxHistory) => [...oldVoteTxHistory, tx]);
-    } catch (error) {
-      console.log("Transaction error: ", error);
-      console.log(error.toString());
-      enqueueSnackbar(`Error: ${error.toString()}`, { variant: "error" });
-    }
-  }
-
-  async function voteSmooth() {
-    const provider = await getProvider();
-    const program = new Program(idl, programID, provider);
-    try {
-      const tx = await program.rpc.voteSmooth({
-        accounts: {
-          voteAccount: voteAccount.publicKey,
-        },
-      });
-
-      const account = await program.account.voteAccount.fetch(
-        voteAccount.publicKey
-      );
-      setVotes({
-        crunchy: parseInt(account.crunchy.toString()),
-        smooth: parseInt(account.smooth.toString()),
-      });
-      enqueueSnackbar("Voted for Smooth!", { variant: "success" });
+      enqueueSnackbar(`Voted for ${capitalize(side)}!`, { variant: "success" });
       setVoteTxHistory((oldVoteTxHistory) => [...oldVoteTxHistory, tx]);
     } catch (error) {
       console.log("Transaction error: ", error);
@@ -155,10 +136,10 @@ export default function Main({ network, voteAccount }) {
               <VoteTally votes={votes} />
             </Grid>
             <Grid item xs={6}>
-              <VoteOption side="crunchy" handleVote={voteCrunchy} />
+              <VoteOption side="crunchy" handleVote={handleVote} />
             </Grid>
             <Grid item xs={6}>
-              <VoteOption side="smooth" handleVote={voteSmooth} />
+              <VoteOption side="smooth" handleVote={handleVote} />
             </Grid>
             <Grid item xs={12}>
               <VoteHistory voteTxHistory={voteTxHistory} />

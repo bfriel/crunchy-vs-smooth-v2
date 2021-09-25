@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// Show vote counts for each side
 export default function VoteTally({ votes }) {
   const classes = useStyles();
 

@@ -1,6 +1,7 @@
 import { Box, Link, List, ListItem, Typography } from "@material-ui/core";
 import React from "react";
 
+// If this user has voted during this session, show them their transaction history
 export default function VoteHistory({ voteTxHistory }) {
   if (voteTxHistory.length < 1) {
     return <Box />;

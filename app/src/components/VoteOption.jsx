@@ -2,6 +2,7 @@ import { Button, Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { useWallet } from "@solana/wallet-adapter-react";
 import React from "react";
+import { capitalize } from "../utils";
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -20,13 +21,13 @@ export default function VoteOption({ side, handleVote }) {
     <Box textAlign="center">
       <Button
         variant="contained"
-        onClick={handleVote}
+        onClick={() => handleVote(side)}
         disabled={!wallet.connected}
         size="large"
         color={side === "smooth" ? "primary" : "secondary"}
         className={classes.button}
       >
-        {`Vote ${side.charAt(0).toUpperCase() + side.slice(1)}`}
+        {`Vote ${capitalize(side)}`}
       </Button>
     </Box>
   );

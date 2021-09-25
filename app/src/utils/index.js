@@ -1,4 +1,13 @@
+import { PublicKey } from "@solana/web3.js";
+import idl from "../idl.json";
+
 export const preflightCommitment = "processed";
+export const programID = new PublicKey(idl.metadata.address);
+
+export const capitalize = (string) => {
+  if (typeof string !== "string") return "";
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
 
 export const percentize = (decimal, min, max) => {
   if (typeof decimal !== "number" || isNaN(decimal)) return "";
