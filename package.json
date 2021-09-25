@@ -10,8 +10,5 @@
   "scripts": {
     "start": "node index.js",
     "build": "cd app && npm install && npm run build"
-  },
-  "engines": {
-    "node": "v16.7.0"
   }
 }
