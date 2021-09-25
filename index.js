@@ -8,6 +8,8 @@ const PORT = process.env.PORT || 3001;
 
 const app = express();
 
+app.use(express.static(path.resolve(__dirname, "app/build")));
+
 app.get("/voteAccount", (req, res) => {
   res.json({ voteAccount });
 });
