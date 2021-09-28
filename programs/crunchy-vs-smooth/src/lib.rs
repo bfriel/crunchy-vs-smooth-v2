@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 
 declare_id!("7Ntd1GePKvSSYseiHqdk88k3mRLaQrMxmGnnoVpn8QQd");
-/// The Program ID can be found in /programs/[your-project-name]/target/idl/[your_project_name].json
+/// The Program ID can be found in /target/idl/[your_project_name].json
 
 /// This is where the magic happens. We define our program!
 /// Each method inside here defines an RPC request handler (aka instruction handler) which can be invoked by clients
@@ -15,7 +15,7 @@ pub mod crunchy_vs_smooth {
         vote_account.smooth = 0;
         Ok(())
     }
-    /// Allow account validation logic is hanlded below at the #[account(...)] macros, letting us just focus on the business logic
+    /// Allow account validation logic is handled below at the #[account(...)] macros, letting us just focus on the business logic
     pub fn vote_crunchy(ctx: Context<Vote>) -> ProgramResult {
         let vote_account = &mut ctx.accounts.vote_account;
         vote_account.crunchy += 1;
