@@ -23,6 +23,33 @@ export default function Main({ voteAccount, voteAccountBump, network }) {
   const wallet = useWallet();
   // const user = web3.Keypair.generate();
 
+  const [votes, setVotes] = useState({
+    crunchy: null,
+    smooth: null,
+  });
+
+  useEffect(() => {
+    // Call Solana program for vote count
+    async function getVotes() {
+      const connection = new Connection(network, preflightCommitment);
+      const provider = new Provider(connection, wallet, preflightCommitment);
+      const program = new Program(idl, programID, provider);
+      try {
+        const account = await program.account.votingState.fetch(voteAccount);
+        setVotes({
+          crunchy: parseInt(account.crunchy.toString()),
+          smooth: parseInt(account.smooth.toString()),
+        });
+      } catch (error) {
+        console.log("could not getVotes: ", error);
+      }
+    }
+
+    if (!!voteAccount) {
+      getVotes();
+    }
+  }, [voteAccount, network, wallet]);
+
   async function getProvider() {
     const connection = new Connection(network, preflightCommitment);
     const provider = new Provider(connection, wallet, preflightCommitment);
@@ -33,31 +60,51 @@ export default function Main({ voteAccount, voteAccountBump, network }) {
   async function initializeVoting() {
     const provider = await getProvider();
     const program = new Program(idl, programID, provider);
-
-    console.log("trying initlizeVoting...");
-    console.log("user:", provider.wallet.publicKey.toString());
-    // console.log("payer:", provider.wallet.publicKey.toString());
-    // console.log("user:", user.publicKey.toString());
-    console.log("voteAccount:", voteAccount.toString());
-    console.log("systemProgram:", web3.SystemProgram.programId.toString());
     try {
       await program.rpc.initialize(new BN(voteAccountBump), {
         accounts: {
           user: provider.wallet.publicKey,
           voteAccount: voteAccount,
           systemProgram: web3.SystemProgram.programId,
-          // payer: provider.wallet.publicKey,
-          // user: user.publicKey,
         },
-        // signers: [user],
       });
-      console.log(program);
-      console.log(program.account);
-      console.log(program.account.votingState);
       const account = await program.account.votingState.fetch(voteAccount);
 
       console.log("account", account);
       enqueueSnackbar("Vote account initialized", { variant: "success" });
+    } catch (error) {
+      console.log("Transaction error: ", error);
+      console.log(error.toString());
+      enqueueSnackbar(`Error: ${error.toString()}`, { variant: "error" });
+    }
+  }
+
+  async function handleVote(side) {
+    const provider = await getProvider();
+    const program = new Program(idl, programID, provider);
+    try {
+      const tx =
+        side === "crunchy"
+          ? await program.rpc.voteCrunchy({
+              accounts: {
+                voteAccount,
+                // user: provider.wallet.publicKey,
+              },
+            })
+          : await program.rpc.voteSmooth({
+              accounts: {
+                voteAccount,
+                // user: provider.wallet.publicKey,
+              },
+            });
+
+      const account = await program.account.votingState.fetch(voteAccount);
+      setVotes({
+        crunchy: parseInt(account.crunchy.toString()),
+        smooth: parseInt(account.smooth.toString()),
+      });
+      enqueueSnackbar(`Voted for ${capitalize(side)}!`, { variant: "success" });
+      // setVoteTxHistory((oldVoteTxHistory) => [...oldVoteTxHistory, tx]);
     } catch (error) {
       console.log("Transaction error: ", error);
       console.log(error.toString());
@@ -70,6 +117,10 @@ export default function Main({ voteAccount, voteAccountBump, network }) {
       <Navbar />
       <h1>{`Vote account: ${voteAccount?.toString()}`}</h1>
       <button onClick={initializeVoting}>Initialize voting</button>
+      <button onClick={() => handleVote("crunchy")}>Vote Crunchy</button>
+      <button onClick={() => handleVote("smooth")}>Vote Smooth</button>
+      <p>{`crunchy: ${votes.crunchy}`}</p>
+      <p>{`smooth: ${votes.smooth}`}</p>
     </React.Fragment>
   );
 }

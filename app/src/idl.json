@@ -32,11 +32,6 @@
       "name": "voteCrunchy",
       "accounts": [
         {
-          "name": "user",
-          "isMut": false,
-          "isSigner": true
-        },
-        {
           "name": "voteAccount",
           "isMut": true,
           "isSigner": false
@@ -47,11 +42,6 @@
     {
       "name": "voteSmooth",
       "accounts": [
-        {
-          "name": "user",
-          "isMut": false,
-          "isSigner": true
-        },
         {
           "name": "voteAccount",
           "isMut": true,

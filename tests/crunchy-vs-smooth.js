@@ -57,7 +57,7 @@ describe("crunchy-vs-smooth", () => {
   it("Votes correctly for crunchy", async () => {
     await program.rpc.voteCrunchy({
       accounts: {
-        user: provider.wallet.publicKey,
+        // user: provider.wallet.publicKey,
         voteAccount: voteAccount,
       },
       // signers: [user],
@@ -73,7 +73,7 @@ describe("crunchy-vs-smooth", () => {
   it("Votes correctly for smooth", async () => {
     await program.rpc.voteSmooth({
       accounts: {
-        user: provider.wallet.publicKey,
+        // user: provider.wallet.publicKey,
         voteAccount: voteAccount,
       },
       // signers: [user],
