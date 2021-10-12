@@ -3,7 +3,7 @@
 To test frontend against devnet
 
 1. Clone repo
-2. `cd cd crunchy-vs-smooth-v2/app/`
+2. `cd crunchy-vs-smooth-v2/app/`
 3. `npm install`
 4. `npm start`
 5. Connect Phantom wallet to devnet
