@@ -6,12 +6,17 @@
       "name": "initialize",
       "accounts": [
         {
-          "name": "voteAccount",
-          "isMut": true,
+          "name": "payer",
+          "isMut": false,
           "isSigner": true
         },
         {
           "name": "user",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "voteAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -21,11 +26,21 @@
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "voteAccountBump",
+          "type": "u8"
+        }
+      ]
     },
     {
       "name": "voteCrunchy",
       "accounts": [
+        {
+          "name": "user",
+          "isMut": false,
+          "isSigner": true
+        },
         {
           "name": "voteAccount",
           "isMut": true,
@@ -38,6 +53,11 @@
       "name": "voteSmooth",
       "accounts": [
         {
+          "name": "user",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
           "name": "voteAccount",
           "isMut": true,
           "isSigner": false
@@ -48,7 +68,7 @@
   ],
   "accounts": [
     {
-      "name": "VoteAccount",
+      "name": "VotingState",
       "type": {
         "kind": "struct",
         "fields": [
@@ -59,12 +79,16 @@
           {
             "name": "smooth",
             "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
           }
         ]
       }
     }
   ],
   "metadata": {
-    "address": "7Ntd1GePKvSSYseiHqdk88k3mRLaQrMxmGnnoVpn8QQd"
+    "address": "6a2GdmttJdanBkoHt7f4Kon4hfadx4UTUgJeRkCaiL3U"
   }
 }

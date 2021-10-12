@@ -8,64 +8,64 @@ describe("crunchy-vs-smooth", () => {
   anchor.setProvider(provider);
 
   const program = anchor.workspace.CrunchyVsSmooth;
-  const voteAccount = anchor.web3.Keypair.generate();
+  const user = anchor.web3.Keypair.generate();
+
+  let voteAccount, voteAccountBump;
+  before(async () => {
+    [voteAccount, voteAccountBump] =
+      await anchor.web3.PublicKey.findProgramAddress(
+        [Buffer.from(anchor.utils.bytes.utf8.encode("vote-account"))],
+        program.programId
+      );
+  });
 
   it("Initializes with 0 votes for crunchy and smooth", async () => {
-    console.log("Testing Initialize...");
-    // The last element passed to RPC methods is always the transaction options
-    // Because voteAccount is being created here, we are required to pass it as a signers array
-    await program.rpc.initialize({
+    await program.rpc.initialize(new anchor.BN(voteAccountBump), {
       accounts: {
-        voteAccount: voteAccount.publicKey,
-        user: provider.wallet.publicKey,
-        systemProgram: SystemProgram.programId,
+        payer: provider.wallet.publicKey,
+        user: user.publicKey,
+        voteAccount: voteAccount,
+        systemProgram: anchor.web3.SystemProgram.programId,
       },
-      signers: [voteAccount],
+      signers: [user],
     });
 
-    const account = await program.account.voteAccount.fetch(
-      voteAccount.publicKey
+    let voteAccountAccount = await program.account.votingState.fetch(
+      voteAccount
     );
-    console.log("Crunchy: ", account.crunchy.toString());
-    console.log("Smooth: ", account.smooth.toString());
-    assert.ok(
-      account.crunchy.toString() == 0 && account.smooth.toString() == 0
-    );
+    assert.equal(0, voteAccountAccount.crunchy.toNumber());
+    assert.equal(0, voteAccountAccount.smooth.toNumber());
   });
+
   it("Votes correctly for crunchy", async () => {
-    console.log("Testing voteCrunchy...");
     await program.rpc.voteCrunchy({
       accounts: {
-        voteAccount: voteAccount.publicKey,
+        user: user.publicKey,
+        voteAccount: voteAccount,
       },
+      signers: [user],
     });
 
-    const account = await program.account.voteAccount.fetch(
-      voteAccount.publicKey
+    let voteAccountAccount = await program.account.votingState.fetch(
+      voteAccount
     );
-    console.log("Crunchy: ", account.crunchy.toString());
-    console.log("Smooth: ", account.smooth.toString());
-
-    assert.ok(
-      account.crunchy.toString() == 1 && account.smooth.toString() == 0
-    );
+    assert.equal(1, voteAccountAccount.crunchy.toNumber());
+    assert.equal(0, voteAccountAccount.smooth.toNumber());
   });
+
   it("Votes correctly for smooth", async () => {
-    console.log("Testing voteSmooth...");
     await program.rpc.voteSmooth({
       accounts: {
-        voteAccount: voteAccount.publicKey,
+        user: user.publicKey,
+        voteAccount: voteAccount,
       },
+      signers: [user],
     });
 
-    const account = await program.account.voteAccount.fetch(
-      voteAccount.publicKey
+    let voteAccountAccount = await program.account.votingState.fetch(
+      voteAccount
     );
-    console.log("Crunchy: ", account.crunchy.toString());
-    console.log("Smooth: ", account.smooth.toString());
-
-    assert.ok(
-      account.crunchy.toString() == 1 && account.smooth.toString() == 1
-    );
+    assert.equal(1, voteAccountAccount.crunchy.toNumber());
+    assert.equal(1, voteAccountAccount.smooth.toNumber());
   });
 });

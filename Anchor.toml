@@ -1,11 +1,11 @@
 [programs.localnet]
-crunchy_vs_smooth = "7Ntd1GePKvSSYseiHqdk88k3mRLaQrMxmGnnoVpn8QQd"
+crunchy_vs_smooth = "6a2GdmttJdanBkoHt7f4Kon4hfadx4UTUgJeRkCaiL3U"
 
 [registry]
 url = "https://anchor.projectserum.com"
 
 [provider]
-cluster = "mainnet"
+cluster = "localnet"
 wallet = "/Users/brianfriel/.config/solana/id.json"
 
 [scripts]
