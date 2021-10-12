@@ -69,7 +69,7 @@ export default function Footer({ programID, voteAccount }) {
             >
               <TwitterIcon />
             </Link>
-            <Link href="https://github.com/bfriel/crunchy-vs-smooth">
+            <Link href="https://github.com/bfriel/crunchy-vs-smooth-v2">
               <GitHubIcon />
             </Link>
           </Box>

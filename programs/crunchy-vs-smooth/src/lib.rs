@@ -61,7 +61,7 @@ pub struct Vote<'info> {
 
 /// Here we define what what the state of our `vote_account` looks like
 /// We define a struct with three public properties: crunchy, smooth, and bump
-/// The `crunchy` and `smooth` will keep track of their respective votes as unsigned 64-bit integers
+/// The `crunchy` and `smooth` properties will keep track of their respective votes as unsigned 64-bit integers
 /// `bump` will store the `vote_account_bump` we passed in when we initialized our program
 /// This `bump` combined with our static "vote-account" seed will make it easy for anyone to derive the same PDA we use use to keep track of our state
 /// All of this will be passed inside each Transaction Instruction to record votes as they occur
