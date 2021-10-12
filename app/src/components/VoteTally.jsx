@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Avatar,
   Box,
@@ -5,8 +6,7 @@ import {
   makeStyles,
   Typography,
 } from "@material-ui/core";
-import React from "react";
-import { formatWithCommas, percentize } from "../utils";
+import { formatWithCommas, percentize } from "../utils/helpers";
 
 const useStyles = makeStyles((theme) => ({
   avatar: {

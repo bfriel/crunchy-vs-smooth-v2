@@ -1,9 +1,9 @@
+import React from "react";
 import { Box, Button, Link, Typography } from "@material-ui/core";
 import { green } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/styles";
 import { WalletMultiButton } from "@solana/wallet-adapter-material-ui";
 import { useWallet } from "@solana/wallet-adapter-react";
-import React from "react";
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -91,7 +91,7 @@ export default function Intro({
               </Link>
               {"'s "}
               <Link
-                href={`https://explorer.solana.com/address/${voteAccount?.publicKey.toString()}`}
+                href={`https://explorer.solana.com/address/${voteAccount?.toString()}`}
                 underline="always"
               >
                 vote account

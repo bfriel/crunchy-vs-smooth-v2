@@ -1,6 +1,6 @@
+import React from "react";
 import { AppBar, Container, makeStyles, Toolbar } from "@material-ui/core";
 import { WalletMultiButton } from "@solana/wallet-adapter-material-ui";
-import React from "react";
 
 const useStyles = makeStyles((theme) => ({
   root: {

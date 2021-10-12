@@ -1,26 +1,15 @@
+import React, { useCallback, useEffect, useState } from "react";
 import {
   ConnectionProvider,
   WalletProvider,
 } from "@solana/wallet-adapter-react";
 import { WalletDialogProvider } from "@solana/wallet-adapter-material-ui";
-import { getPhantomWallet } from "@solana/wallet-adapter-wallets";
 import { SnackbarProvider, useSnackbar } from "notistack";
 import { createTheme, ThemeProvider } from "@material-ui/core";
 import { blue, orange } from "@material-ui/core/colors";
-import { clusterApiUrl, PublicKey } from "@solana/web3.js";
-import { useCallback, useEffect, useState } from "react";
 import { web3, utils } from "@project-serum/anchor";
-import idl from "./idl.json";
-
 import Main from "./components/Main";
-import { programID } from "./utils";
-
-const localnet = "http://127.0.0.1:8899";
-// const devnet = clusterApiUrl("devnet");
-// const mainnet = clusterApiUrl("mainnet-beta");
-const network = localnet;
-
-const wallets = [getPhantomWallet()];
+import { programID, network, wallets } from "./utils/config";
 
 const theme = createTheme({
   palette: {
@@ -69,21 +58,6 @@ function AppWrappedWithProviders() {
     account: null,
     accountBump: null,
   });
-
-  // useEffect(() => {
-  //   fetch("/voteAccount")
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       const accountArray = Object.values(data.voteAccount._keypair.secretKey);
-  //       const secret = new Uint8Array(accountArray);
-  //       const kp = web3.Keypair.fromSecretKey(secret);
-  //       setVoteAccount(kp);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //       enqueueSnackbar("Could not fetch vote account", { variant: "error" });
-  //     });
-  // }, [enqueueSnackbar]);
 
   useEffect(() => {
     const getVoteAccount = async () => {

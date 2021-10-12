@@ -1,3 +1,4 @@
+import React from "react";
 import {
   AppBar,
   Box,
@@ -7,7 +8,6 @@ import {
   Toolbar,
   Typography,
 } from "@material-ui/core";
-import React from "react";
 import TwitterIcon from "@material-ui/icons/Twitter";
 import GitHubIcon from "@material-ui/icons/GitHub";
 
@@ -53,7 +53,7 @@ export default function Footer({ programID, voteAccount }) {
             {" | "}
             <Link
               underline="always"
-              href={`https://explorer.solana.com/address/${voteAccount?.publicKey.toString()}`}
+              href={`https://explorer.solana.com/address/${voteAccount?.toString()}`}
             >
               Vote Account
             </Link>

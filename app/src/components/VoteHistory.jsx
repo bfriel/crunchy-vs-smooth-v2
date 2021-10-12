@@ -1,5 +1,5 @@
-import { Box, Link, List, ListItem, Typography } from "@material-ui/core";
 import React from "react";
+import { Box, Link, List, ListItem, Typography } from "@material-ui/core";
 
 // If this user has voted during this session, show them their transaction history
 export default function VoteHistory({ voteTxHistory }) {

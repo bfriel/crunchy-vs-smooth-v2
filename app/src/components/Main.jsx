@@ -1,18 +1,18 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection } from "@solana/web3.js";
 import { Program, Provider, web3, BN } from "@project-serum/anchor";
-import idl from "../idl.json";
-import { useState } from "react";
 import { Box, Container, Grid } from "@material-ui/core";
+import { useSnackbar } from "notistack";
+import idl from "../idl.json";
+import { preflightCommitment, programID } from "../utils/config";
+import { capitalize } from "../utils/helpers";
 import Navbar from "./Navbar";
 import VoteOption from "./VoteOption";
 import VoteTally from "./VoteTally";
 import Footer from "./Footer";
 import Intro from "./Intro";
-import { useSnackbar } from "notistack";
 import VoteHistory from "./VoteHistory";
-import { preflightCommitment, programID, capitalize } from "../utils";
 
 const propTypes = {};
 
@@ -21,12 +21,12 @@ const defaultProps = {};
 export default function Main({ voteAccount, voteAccountBump, network }) {
   const { enqueueSnackbar } = useSnackbar();
   const wallet = useWallet();
-  // const user = web3.Keypair.generate();
 
   const [votes, setVotes] = useState({
     crunchy: null,
     smooth: null,
   });
+  const [voteTxHistory, setVoteTxHistory] = useState([]);
 
   useEffect(() => {
     // Call Solana program for vote count
@@ -37,8 +37,8 @@ export default function Main({ voteAccount, voteAccountBump, network }) {
       try {
         const account = await program.account.votingState.fetch(voteAccount);
         setVotes({
-          crunchy: parseInt(account.crunchy.toString()),
-          smooth: parseInt(account.smooth.toString()),
+          crunchy: account.crunchy?.toNumber(),
+          smooth: account.smooth?.toNumber(),
         });
       } catch (error) {
         console.log("could not getVotes: ", error);
@@ -69,8 +69,10 @@ export default function Main({ voteAccount, voteAccountBump, network }) {
         },
       });
       const account = await program.account.votingState.fetch(voteAccount);
-
-      console.log("account", account);
+      setVotes({
+        crunchy: account.crunchy?.toNumber(),
+        smooth: account.smooth?.toNumber(),
+      });
       enqueueSnackbar("Vote account initialized", { variant: "success" });
     } catch (error) {
       console.log("Transaction error: ", error);
@@ -100,11 +102,11 @@ export default function Main({ voteAccount, voteAccountBump, network }) {
 
       const account = await program.account.votingState.fetch(voteAccount);
       setVotes({
-        crunchy: parseInt(account.crunchy.toString()),
-        smooth: parseInt(account.smooth.toString()),
+        crunchy: account.crunchy?.toNumber(),
+        smooth: account.smooth?.toNumber(),
       });
       enqueueSnackbar(`Voted for ${capitalize(side)}!`, { variant: "success" });
-      // setVoteTxHistory((oldVoteTxHistory) => [...oldVoteTxHistory, tx]);
+      setVoteTxHistory((oldVoteTxHistory) => [...oldVoteTxHistory, tx]);
     } catch (error) {
       console.log("Transaction error: ", error);
       console.log(error.toString());
@@ -113,15 +115,36 @@ export default function Main({ voteAccount, voteAccountBump, network }) {
   }
 
   return (
-    <React.Fragment>
-      <Navbar />
-      <h1>{`Vote account: ${voteAccount?.toString()}`}</h1>
-      <button onClick={initializeVoting}>Initialize voting</button>
-      <button onClick={() => handleVote("crunchy")}>Vote Crunchy</button>
-      <button onClick={() => handleVote("smooth")}>Vote Smooth</button>
-      <p>{`crunchy: ${votes.crunchy}`}</p>
-      <p>{`smooth: ${votes.smooth}`}</p>
-    </React.Fragment>
+    <Box height="100%" display="flex" flexDirection="column">
+      <Box flex="1 0 auto">
+        <Navbar />
+        <Container>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <Intro
+                votes={votes}
+                initializeVoting={initializeVoting}
+                programID={programID}
+                voteAccount={voteAccount}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <VoteTally votes={votes} />
+            </Grid>
+            <Grid item xs={6}>
+              <VoteOption side="crunchy" handleVote={handleVote} />
+            </Grid>
+            <Grid item xs={6}>
+              <VoteOption side="smooth" handleVote={handleVote} />
+            </Grid>
+            <Grid item xs={12}>
+              <VoteHistory voteTxHistory={voteTxHistory} />
+            </Grid>
+          </Grid>
+        </Container>
+      </Box>
+      <Footer programID={programID} voteAccount={voteAccount} />
+    </Box>
   );
 }
 
