@@ -13,6 +13,7 @@ import { web3, utils } from "@project-serum/anchor";
 import idl from "./idl.json";
 
 import Main from "./components/Main";
+import { programID } from "./utils";
 
 const localnet = "http://127.0.0.1:8899";
 // const devnet = clusterApiUrl("devnet");
@@ -64,7 +65,10 @@ const theme = createTheme({
 function AppWrappedWithProviders() {
   const { enqueueSnackbar } = useSnackbar();
 
-  const [voteAccount, setVoteAccount] = useState(null);
+  const [voteAccount, setVoteAccount] = useState({
+    account: null,
+    accountBump: null,
+  });
 
   // useEffect(() => {
   //   fetch("/voteAccount")
@@ -87,9 +91,9 @@ function AppWrappedWithProviders() {
         accountBump = null;
       [account, accountBump] = await web3.PublicKey.findProgramAddress(
         [Buffer.from(utils.bytes.utf8.encode("vote-account"))],
-        new PublicKey(idl.metadata.address)
+        programID
       );
-      setVoteAccount(account);
+      setVoteAccount({ account, accountBump });
     };
     getVoteAccount();
   }, []);
@@ -109,7 +113,11 @@ function AppWrappedWithProviders() {
   return (
     <WalletProvider wallets={wallets} onError={onWalletError} autoConnect>
       <WalletDialogProvider>
-        <Main network={network} voteAccount={voteAccount} />
+        <Main
+          network={network}
+          voteAccount={voteAccount.account}
+          voteAccountBump={voteAccount.accountBump}
+        />
       </WalletDialogProvider>
     </WalletProvider>
   );

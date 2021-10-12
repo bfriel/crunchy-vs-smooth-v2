@@ -1,13 +1,76 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React, { useEffect } from "react";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { Connection } from "@solana/web3.js";
+import { Program, Provider, web3, BN } from "@project-serum/anchor";
+import idl from "../idl.json";
+import { useState } from "react";
+import { Box, Container, Grid } from "@material-ui/core";
+import Navbar from "./Navbar";
+import VoteOption from "./VoteOption";
+import VoteTally from "./VoteTally";
+import Footer from "./Footer";
+import Intro from "./Intro";
+import { useSnackbar } from "notistack";
+import VoteHistory from "./VoteHistory";
+import { preflightCommitment, programID, capitalize } from "../utils";
 
 const propTypes = {};
 
 const defaultProps = {};
 
-export default function Main({ voteAccount }) {
+export default function Main({ voteAccount, voteAccountBump, network }) {
+  const { enqueueSnackbar } = useSnackbar();
+  const wallet = useWallet();
+  // const user = web3.Keypair.generate();
+
+  async function getProvider() {
+    const connection = new Connection(network, preflightCommitment);
+    const provider = new Provider(connection, wallet, preflightCommitment);
+    return provider;
+  }
+
+  // Initialize the program if this is the first time its launched
+  async function initializeVoting() {
+    const provider = await getProvider();
+    const program = new Program(idl, programID, provider);
+
+    console.log("trying initlizeVoting...");
+    console.log("user:", provider.wallet.publicKey.toString());
+    // console.log("payer:", provider.wallet.publicKey.toString());
+    // console.log("user:", user.publicKey.toString());
+    console.log("voteAccount:", voteAccount.toString());
+    console.log("systemProgram:", web3.SystemProgram.programId.toString());
+    try {
+      await program.rpc.initialize(new BN(voteAccountBump), {
+        accounts: {
+          user: provider.wallet.publicKey,
+          voteAccount: voteAccount,
+          systemProgram: web3.SystemProgram.programId,
+          // payer: provider.wallet.publicKey,
+          // user: user.publicKey,
+        },
+        // signers: [user],
+      });
+      console.log(program);
+      console.log(program.account);
+      console.log(program.account.votingState);
+      const account = await program.account.votingState.fetch(voteAccount);
+
+      console.log("account", account);
+      enqueueSnackbar("Vote account initialized", { variant: "success" });
+    } catch (error) {
+      console.log("Transaction error: ", error);
+      console.log(error.toString());
+      enqueueSnackbar(`Error: ${error.toString()}`, { variant: "error" });
+    }
+  }
+
   return (
-    <React.Fragment>{`Vote account: ${voteAccount?.toString()}`}</React.Fragment>
+    <React.Fragment>
+      <Navbar />
+      <h1>{`Vote account: ${voteAccount?.toString()}`}</h1>
+      <button onClick={initializeVoting}>Initialize voting</button>
+    </React.Fragment>
   );
 }
 

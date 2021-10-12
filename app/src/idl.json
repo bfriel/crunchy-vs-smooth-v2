@@ -6,11 +6,6 @@
       "name": "initialize",
       "accounts": [
         {
-          "name": "payer",
-          "isMut": false,
-          "isSigner": true
-        },
-        {
           "name": "user",
           "isMut": false,
           "isSigner": true

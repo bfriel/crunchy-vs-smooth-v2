@@ -8,7 +8,7 @@ describe("crunchy-vs-smooth", () => {
   anchor.setProvider(provider);
 
   const program = anchor.workspace.CrunchyVsSmooth;
-  const user = anchor.web3.Keypair.generate();
+  // const user = anchor.web3.Keypair.generate();
 
   let voteAccount, voteAccountBump;
   before(async () => {
@@ -22,12 +22,11 @@ describe("crunchy-vs-smooth", () => {
   it("Initializes with 0 votes for crunchy and smooth", async () => {
     await program.rpc.initialize(new anchor.BN(voteAccountBump), {
       accounts: {
-        payer: provider.wallet.publicKey,
-        user: user.publicKey,
+        user: provider.wallet.publicKey,
         voteAccount: voteAccount,
         systemProgram: anchor.web3.SystemProgram.programId,
       },
-      signers: [user],
+      // signers: [user],
     });
 
     let voteAccountAccount = await program.account.votingState.fetch(
@@ -37,13 +36,31 @@ describe("crunchy-vs-smooth", () => {
     assert.equal(0, voteAccountAccount.smooth.toNumber());
   });
 
+  // it("Initializes with 0 votes for crunchy and smooth", async () => {
+  //   await program.rpc.initialize(new anchor.BN(voteAccountBump), {
+  //     accounts: {
+  //       payer: provider.wallet.publicKey,
+  //       user: user.publicKey,
+  //       voteAccount: voteAccount,
+  //       systemProgram: anchor.web3.SystemProgram.programId,
+  //     },
+  //     signers: [user],
+  //   });
+
+  //   let voteAccountAccount = await program.account.votingState.fetch(
+  //     voteAccount
+  //   );
+  //   assert.equal(0, voteAccountAccount.crunchy.toNumber());
+  //   assert.equal(0, voteAccountAccount.smooth.toNumber());
+  // });
+
   it("Votes correctly for crunchy", async () => {
     await program.rpc.voteCrunchy({
       accounts: {
-        user: user.publicKey,
+        user: provider.wallet.publicKey,
         voteAccount: voteAccount,
       },
-      signers: [user],
+      // signers: [user],
     });
 
     let voteAccountAccount = await program.account.votingState.fetch(
@@ -56,10 +73,10 @@ describe("crunchy-vs-smooth", () => {
   it("Votes correctly for smooth", async () => {
     await program.rpc.voteSmooth({
       accounts: {
-        user: user.publicKey,
+        user: provider.wallet.publicKey,
         voteAccount: voteAccount,
       },
-      signers: [user],
+      // signers: [user],
     });
 
     let voteAccountAccount = await program.account.votingState.fetch(
@@ -68,4 +85,54 @@ describe("crunchy-vs-smooth", () => {
     assert.equal(1, voteAccountAccount.crunchy.toNumber());
     assert.equal(1, voteAccountAccount.smooth.toNumber());
   });
+
+  // it("Initializes with 0 votes for crunchy and smooth", async () => {
+  //   await program.rpc.initialize(new anchor.BN(voteAccountBump), {
+  //     accounts: {
+  //       payer: provider.wallet.publicKey,
+  //       user: user.publicKey,
+  //       voteAccount: voteAccount,
+  //       systemProgram: anchor.web3.SystemProgram.programId,
+  //     },
+  //     signers: [user],
+  //   });
+
+  //   let voteAccountAccount = await program.account.votingState.fetch(
+  //     voteAccount
+  //   );
+  //   assert.equal(0, voteAccountAccount.crunchy.toNumber());
+  //   assert.equal(0, voteAccountAccount.smooth.toNumber());
+  // });
+
+  // it("Votes correctly for crunchy", async () => {
+  //   await program.rpc.voteCrunchy({
+  //     accounts: {
+  //       user: user.publicKey,
+  //       voteAccount: voteAccount,
+  //     },
+  //     signers: [user],
+  //   });
+
+  //   let voteAccountAccount = await program.account.votingState.fetch(
+  //     voteAccount
+  //   );
+  //   assert.equal(1, voteAccountAccount.crunchy.toNumber());
+  //   assert.equal(0, voteAccountAccount.smooth.toNumber());
+  // });
+
+  // it("Votes correctly for smooth", async () => {
+  //   await program.rpc.voteSmooth({
+  //     accounts: {
+  //       user: user.publicKey,
+  //       voteAccount: voteAccount,
+  //     },
+  //     signers: [user],
+  //   });
+
+  //   let voteAccountAccount = await program.account.votingState.fetch(
+  //     voteAccount
+  //   );
+  //   assert.equal(1, voteAccountAccount.crunchy.toNumber());
+  //   assert.equal(1, voteAccountAccount.smooth.toNumber());
+  // });
 });
