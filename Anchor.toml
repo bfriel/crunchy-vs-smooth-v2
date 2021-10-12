@@ -5,7 +5,7 @@ crunchy_vs_smooth = "6a2GdmttJdanBkoHt7f4Kon4hfadx4UTUgJeRkCaiL3U"
 url = "https://anchor.projectserum.com"
 
 [provider]
-cluster = "localnet"
+cluster = "devnet"
 wallet = "/Users/brianfriel/.config/solana/id.json"
 
 [scripts]
