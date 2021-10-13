@@ -7,7 +7,7 @@ import { WalletDialogProvider } from "@solana/wallet-adapter-material-ui";
 import { SnackbarProvider, useSnackbar } from "notistack";
 import { createTheme, ThemeProvider } from "@material-ui/core";
 import { blue, orange } from "@material-ui/core/colors";
-import { web3, utils } from "@project-serum/anchor";
+import { web3 } from "@project-serum/anchor";
 import Main from "./components/Main";
 import { programID, network, wallets } from "./utils/config";
 
@@ -64,7 +64,7 @@ function AppWrappedWithProviders() {
       let account,
         accountBump = null;
       [account, accountBump] = await web3.PublicKey.findProgramAddress(
-        [Buffer.from(utils.bytes.utf8.encode("vote-account"))],
+        [Buffer.from("vote_account")],
         programID
       );
       setVoteAccount({ account, accountBump });

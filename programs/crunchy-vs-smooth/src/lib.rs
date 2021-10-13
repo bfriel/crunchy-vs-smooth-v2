@@ -10,12 +10,11 @@ mod crunchy_vs_smooth {
     use super::*;
 
     /// The first parameter for every RPC handler is the Context struct. We define Initialize and Vote below at #[derive(Accounts)]
-    /// When we call initalize our program, we'll also store the `vote_account_bump` that was used to derive our PDA so that others can easily derive it on their clients
+    /// When `initalize` is called, we'll store the `vote_account_bump` that was used to derive our PDA so that others can easily derive it on their clients
+    /// We no longer have to manually set both `crunchy` and `smooth` to 0 because we opted to use the `default` trait on our VotingState struct at the bottom of this file
+    /// This a Rust trait that is used via #[derive(Default)]. More info on that here: https://doc.rust-lang.org/std/default/trait.Default.html
     pub fn initialize(ctx: Context<Initialize>, vote_account_bump: u8) -> ProgramResult {
-        let vote_account = &mut ctx.accounts.vote_account;
-        vote_account.crunchy = 0;
-        vote_account.smooth = 0;
-        vote_account.bump = vote_account_bump;
+        ctx.accounts.vote_account.bump = vote_account_bump;
         Ok(())
     }
 
@@ -42,12 +41,14 @@ pub struct Initialize<'info> {
     /// We mark `vote_account` with the `init` attribute, which creates a new account owned by the program
     /// When using `init`, we must also provide:
     /// `payer`, which funds the account creation
-    /// `space`, which defines how large the account should be.
     /// and the `system_program` which is required by the runtime
+    /// 
+    /// If our account were to use variable length types like String or Vec we would also need to allocate `space` to our account
+    /// Since we are only dealing with fixed-sized integers, we can leave out `space` and Anchor will calculate this for us automatically
     ///
     /// `seeds` and `bump` tell us that our `vote_account` is a PDA that can be derived from their respective values
     /// Account<'info, VotingState> tells us that it should be deserialized to the VotingState struct defined below at #[account]
-    #[account(init, seeds = [b"vote-account".as_ref()], bump = vote_account_bump, payer = user, space = 8 + 8 + 8 + 1)]
+    #[account(init, seeds = [b"vote_account".as_ref()], bump = vote_account_bump, payer = user)]
     vote_account: Account<'info, VotingState>,
     user: Signer<'info>,
     system_program: Program<'info, System>,
@@ -55,7 +56,7 @@ pub struct Initialize<'info> {
 
 #[derive(Accounts)]
 pub struct Vote<'info> {
-    #[account(mut, seeds = [b"vote-account".as_ref()], bump = vote_account.bump)]
+    #[account(mut, seeds = [b"vote_account".as_ref()], bump = vote_account.bump)]
     vote_account: Account<'info, VotingState>,
 }
 
@@ -63,9 +64,10 @@ pub struct Vote<'info> {
 /// We define a struct with three public properties: crunchy, smooth, and bump
 /// The `crunchy` and `smooth` properties will keep track of their respective votes as unsigned 64-bit integers
 /// `bump` will store the `vote_account_bump` we passed in when we initialized our program
-/// This `bump` combined with our static "vote-account" seed will make it easy for anyone to derive the same PDA we use use to keep track of our state
+/// This `bump` combined with our static "vote_account" seed will make it easy for anyone to derive the same PDA we use use to keep track of our state
 /// All of this will be passed inside each Transaction Instruction to record votes as they occur
 #[account]
+#[derive(Default)]
 pub struct VotingState {
     crunchy: u64,
     smooth: u64,

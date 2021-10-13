@@ -12,7 +12,7 @@ describe("crunchy-vs-smooth", () => {
   before(async () => {
     [voteAccount, voteAccountBump] =
       await anchor.web3.PublicKey.findProgramAddress(
-        [Buffer.from(anchor.utils.bytes.utf8.encode("vote-account"))],
+        [Buffer.from("vote_account")],
         program.programId
       );
   });
